@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crystal Store Portal - Sub Market 367-A</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #e6edf3;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b949e;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-[#30363d] bg-[#161b22] px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2">
+                <div class="bg-[#0053e2] text-white p-1.5 rounded-lg flex items-center justify-center font-bold">
+                    <span class="text-sm tracking-wider">CR</span>
+                </div>
+                <span class="font-bold text-lg text-white">Crystal</span>
+            </div>
+            <div class="h-4 w-[1px] bg-[#30363d]"></div>
+            <nav class="flex items-center space-x-3 text-sm font-medium text-[#8b949e]">
+                <button onclick="showGrid()" class="hover:text-white transition">Home</button>
+                <span class="text-[#30363d]">&gt;</span>
+                <span class="text-white" id="nav-current">US Stores</span>
+            </nav>
+        </div>
+
+        <div class="flex items-center space-x-4 text-sm">
+            <div class="text-right">
+                <div class="text-xs text-[#8b949e]">Logged in as</div>
+                <div class="font-bold text-[#ffc220]">Mike (FS Manager)</div>
+            </div>
+            <div class="w-8 h-8 rounded-full bg-[#0053e2] text-white flex items-center justify-center font-bold text-xs shadow-md">
+                ML
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 p-6" id="main-content">
+        <!-- Stores Grid View (Default) -->
+        <div id="grid-view">
+            <!-- KPI Cards Row -->
+            <div class="mb-6">
+                <h2 class="text-sm font-semibold text-[#8b949e] mb-3 uppercase tracking-wider">Key metrics (Sub-Market 367-A)</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+                    
+                    <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex flex-col items-center justify-between text-center relative overflow-hidden">
+                        <span class="text-xs text-[#8b949e] font-medium leading-snug">Avg Refrigeration TnT<br><span class="text-[10px]">Last 72 Hours</span></span>
+                        <div class="my-3 relative w-16 h-16 flex items-center justify-center">
+                            <svg class="w-full h-full transform -rotate-90">
+                                <circle cx="32" cy="32" r="28" stroke="#30363d" stroke-width="4" fill="transparent" />
+                                <circle cx="32" cy="32" r="28" stroke="#2a8703" stroke-width="4" fill="transparent" stroke-dasharray="175.9" stroke-dashoffset="24.6" />
+                            </svg>
+                            <span class="absolute text-sm font-bold text-white">86%</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex flex-col justify-between">
+                        <span class="text-xs text-[#8b949e] font-medium leading-snug">Total WO<br><span class="text-[10px]">Open, in Progress</span></span>
+                        <div class="text-3xl font-extrabold text-white my-3" id="global-total-wos">569</div>
+                    </div>
+
+                    <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex flex-col justify-between">
+                        <span class="text-xs text-[#8b949e] font-medium leading-snug">Total Alarms<br><span class="text-[10px]">Latest</span></span>
+                        <div class="text-3xl font-extrabold text-[#ea1100] my-3">4</div>
+                    </div>
+
+                    <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex flex-col justify-between">
+                        <span class="text-xs text-[#8b949e] font-medium leading-snug">Total Product Loss<br><span class="text-[10px]">Latest</span></span>
+                        <div class="text-3xl font-extrabold text-[#ffc220] my-3">$332.97K</div>
+                    </div>
+
+                    <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex flex-col justify-between">
+                        <span class="text-xs text-[#8b949e] font-medium leading-snug">Average AHU Dewpoint<br><span class="text-[10px]">Latest</span></span>
+                        <div class="text-3xl font-extrabold text-white my-3">46°F</div>
+                    </div>
+
+                    <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex flex-col items-center justify-between text-center">
+                        <span class="text-xs text-[#8b949e] font-medium leading-snug">Average HVAC TnT<br><span class="text-[10px]">Last 72 Hours</span></span>
+                        <div class="my-3 relative w-16 h-16 flex items-center justify-center">
+                            <svg class="w-full h-full transform -rotate-90">
+                                <circle cx="32" cy="32" r="28" stroke="#30363d" stroke-width="4" fill="transparent" />
+                                <circle cx="32" cy="32" r="28" stroke="#2a8703" stroke-width="4" fill="transparent" stroke-dasharray="175.9" stroke-dashoffset="7.0" />
+                            </svg>
+                            <span class="absolute text-sm font-bold text-white">96%</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex flex-col justify-between">
+                        <span class="text-xs text-[#8b949e] font-medium leading-snug">Average Roofing Index<br><span class="text-[10px]">Latest</span></span>
+                        <div class="text-2xl font-extrabold text-white my-3">21/100</div>
+                    </div>
+
+                    <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex flex-col justify-between">
+                        <span class="text-xs text-[#8b949e] font-medium leading-snug">Average Paving Index<br><span class="text-[10px]">Latest</span></span>
+                        <div class="text-2xl font-extrabold text-white my-3">71/100</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub-Market Selector Tabs -->
+            <div class="mb-4 border-b border-[#30363d] flex space-x-2 text-sm font-bold text-[#8b949e]">
+                <button id="submarket-367-A-tab" onclick="switchSubMarket('367-A')" class="px-4 py-2 border-b-2 border-[#0053e2] text-white">Sub Market 367-A (Mike Leanox)</button>
+                <button id="submarket-366-A-tab" onclick="switchSubMarket('366-A')" class="px-4 py-2 hover:text-white">Sub Market 366-A (Tony)</button>
+            </div>
+
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-3">
+                    <h1 class="text-xl font-bold text-white">Stores</h1>
+                    <span id="stores-count-badge" class="bg-[#21262d] text-xs font-semibold px-2.5 py-0.5 rounded-full border border-[#30363d] text-[#8b949e]">13 stores</span>
+                </div>
+            </div>
+
+            <!-- Stores Table -->
+            <div class="bg-[#161b22] border border-[#30363d] rounded-lg overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-[#21262d]/50 border-b border-[#30363d] text-[#8b949e] font-semibold text-xs uppercase tracking-wider">
+                                <th class="px-4 py-3">Store Number</th>
+                                <th class="px-4 py-3">Health Score</th>
+                                <th class="px-4 py-3">Refrigeration TnT</th>
+                                <th class="px-4 py-3">HVAC TnT</th>
+                                <th class="px-4 py-3 text-center">Alarms</th>
+                                <th class="px-4 py-3 text-center">Open WO (Ref)</th>
+                                <th class="px-4 py-3 text-center">Open WO (HVAC)</th>
+                                <th class="px-4 py-3 text-center">Active Projects</th>
+                                <th class="px-4 py-3">FS Manager</th>
+                                <th class="px-4 py-3">HVACR Tech</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#30363d]" id="stores-table-body">
+                            <!-- Injected by script -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail Store View (Hidden by default) -->
+        <div id="detail-view" class="hidden">
+            <!-- Header Banner -->
+            <div class="mb-4 bg-[#161b22] border border-[#30363d] rounded-lg p-4">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div class="flex items-center space-x-3 flex-wrap">
+                        <h1 class="text-2xl font-black text-white" id="det-store-number">1291</h1>
+                        <span class="bg-[#21262d] text-xs font-semibold px-2 py-0.5 rounded border border-[#30363d] text-[#ffc220]">Operating</span>
+                        <span class="text-sm text-[#8b949e] font-medium" id="det-store-name">A1 - WM Supercenter</span>
+                        <span class="text-[#30363d]">•</span>
+                        <span class="text-xs text-[#8b949e]">Region: <b class="text-white" id="det-region">10B</b></span>
+                        <span class="text-xs text-[#8b949e]">FS Market: <b class="text-white" id="det-market">367</b></span>
+                        <span class="text-xs text-[#8b949e]">FS Sub Market: <b class="text-white" id="det-sub-market">367-A</b></span>
+                    </div>
+                    <div class="text-xs text-[#8b949e] flex items-center space-x-2">
+                        <svg class="w-4 h-4 text-[#ffc220]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <span class="text-white" id="det-address">7150 E SPEEDWAY BLVD, TUCSON, AZ 85710, US</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs Bar -->
+            <div class="mb-6 border-b border-[#30363d] flex space-x-2 overflow-x-auto text-sm">
+                <button class="px-4 py-2 border-b-2 border-[#0053e2] text-white font-bold whitespace-nowrap">Smart Insights</button>
+                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">Work Orders</button>
+                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">Alarms</button>
+                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">Telemetry</button>
+                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">2D Store Layout</button>
+                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">Assets</button>
+                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">Store Reviews</button>
+                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">Store Info</button>
+                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">Active Projects</button>
+                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">3D Digital Twin</button>
+            </div>
+
+            <!-- Key metrics grid specific to store -->
+            <div class="mb-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+                    <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex flex-col items-center justify-between text-center">
+                        <span class="text-xs text-[#8b949e] font-medium leading-snug">Refrigeration TnT<br><span class="text-[10px]">Last 72 Hours</span></span>
+                        <div class="my-3 relative w-16 h-16 flex items-center justify-center">
+                            <svg class="w-full h-full transform -rotate-90">
+                                <circle cx="32" cy="32" r="28" stroke="#30363d" stroke-width="4" fill="transparent" />
+                                <circle id="det-ref-tnt-circle" cx="32" cy="32" r="28" stroke="#2a8703" stroke-width="4" fill="transparent" stroke-dasharray="175.9" stroke-dashoffset="24.6" />
+                            </svg>
+                            <span class="absolute text-sm font-bold text-white" id="det-ref-tnt">76%</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex flex-col justify-between">
+                        <span class="text-xs text-[#8b949e] font-medium leading-snug">WOs Open<br><span class="text-[10px]">In Progress</span></span>
+                        <div class="text-3xl font-extrabold text-white my-3" id="det-wos">42</div>
+                    </div>
+
+                    <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex flex-col justify-between">
+                        <span class="text-xs text-[#8b949e] font-medium leading-snug">Alarms<br><span class="text-[10px]">Latest</span></span>
+                        <div class="text-3xl font-extrabold my-3" id="det-alarms">1</div>
+                    </div>
+
+                    <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex flex-col justify-between">
+                        <span class="text-xs text-[#8b949e] font-medium leading-snug">Product Loss<br><span class="text-[10px]">Latest</span></span>
+                        <div class="text-3xl font-extrabold text-[#ffc220] my-3" id="det-product-loss">$21.84K</div>
+                    </div>
+
+                    <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex flex-col justify-between">
+                        <span class="text-xs text-[#8b949e] font-medium leading-snug">AHU Dewpoint<br><span class="text-[10px]">Latest</span></span>
+                        <div class="text-3xl font-extrabold text-white my-3" id="det-dewpoint">51°F</div>
+                    </div>
+
+                    <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex flex-col items-center justify-between text-center">
+                        <span class="text-xs text-[#8b949e] font-medium leading-snug">HVAC TnT<br><span class="text-[10px]">Last 72 Hours</span></span>
+                        <div class="my-3 relative w-16 h-16 flex items-center justify-center">
+                            <svg class="w-full h-full transform -rotate-90">
+                                <circle cx="32" cy="32" r="28" stroke="#30363d" stroke-width="4" fill="transparent" />
+                                <circle id="det-hvac-tnt-circle" cx="32" cy="32" r="28" stroke="#2a8703" stroke-width="4" fill="transparent" stroke-dasharray="175.9" stroke-dashoffset="24.6" />
+                            </svg>
+                            <span class="absolute text-sm font-bold text-white" id="det-hvac-tnt">98%</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex flex-col justify-between">
+                        <span class="text-xs text-[#8b949e] font-medium leading-snug">Roofing Index<br><span class="text-[10px]">Latest</span></span>
+                        <div class="text-2xl font-extrabold text-white my-3" id="det-roofing">21/100</div>
+                    </div>
+
+                    <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4 flex flex-col justify-between">
+                        <span class="text-xs text-[#8b949e] font-medium leading-snug">Paving Index<br><span class="text-[10px]">Latest</span></span>
+                        <div class="text-2xl font-extrabold text-white my-3" id="det-paving">71/100</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back button -->
+            <div class="mb-4">
+                <button onclick="showGrid()" class="text-sm bg-[#21262d] border border-[#30363d] px-4 py-1.5 rounded hover:border-[#8b949e] transition flex items-center space-x-1.5 text-[#e6edf3]">
+                    <span>&larr; Back to Stores Grid</span>
+                </button>
+            </div>
+
+            <!-- Refrigeration Performance Section -->
+            <div class="mb-6">
+                <h2 class="text-lg font-bold text-white mb-3 flex items-center space-x-2">
+                    <span>Refrigeration performance</span>
+                    <span class="text-xs text-[#8b949e] font-medium">(Sub-Market 367-A)</span>
+                </h2>
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <!-- Left Sidebar: Racks -->
+                    <div class="space-y-3 lg:col-span-1">
+                        <div class="text-sm font-bold text-[#8b949e] uppercase tracking-wider mb-2">Racks</div>
+                        <div class="space-y-3" id="racks-container">
+                            <!-- Injected by script -->
+                        </div>
+                    </div>
+
+                    <!-- Right Main Grid: Refrigeration Cases -->
+                    <div class="lg:col-span-3 bg-[#161b22] border border-[#30363d] rounded-lg p-4">
+                        <div class="flex items-center justify-between border-b border-[#30363d] pb-3 mb-4">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-sm font-bold text-white uppercase tracking-wider">Refrigeration Cases</span>
+                                <span class="bg-[#21262d] text-xs font-semibold px-2 py-0.5 rounded border border-[#30363d] text-[#8b949e]" id="det-cases-count">169 cases</span>
+                            </div>
+                            <div class="flex items-center space-x-4 text-[10px] text-[#8b949e]">
+                                <div class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-[#161b22] border border-[#30363d]"></span><span>Blank</span></div>
+                                <div class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded bg-[#ea1100]"></span><span>&lt; 60%</span></div>
+                                <div class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded bg-[#ffc220]"></span><span>60% to 72%</span></div>
+                                <div class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded bg-[#21262d] border border-[#8b949e]"></span><span>72% to 85%</span></div>
+                                <div class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded bg-[#2a8703]"></span><span>&gt; 85%</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Cases Table -->
+                        <div class="overflow-y-auto max-h-[600px]">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-[#21262d]/50 border-b border-[#30363d] text-[#8b949e] uppercase tracking-wider font-semibold">
+                                        <th class="px-3 py-2">Case Name</th>
+                                        <th class="px-3 py-2">Sensor Label</th>
+                                        <th class="px-3 py-2">Mod Label</th>
+                                        <th class="px-3 py-2 text-center">Alarms</th>
+                                        <th class="px-3 py-2 text-center">Work Orders</th>
+                                        <th class="px-3 py-2">Time Within Target</th>
+                                        <th class="px-3 py-2">Latest Reading</th>
+                                        <th class="px-3 py-2">Set Point</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[#30363d]" id="cases-table-body">
+                                    <!-- Injected by script -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Telemetry Modal Popup for Rack details -->
+    <div id="telemetry-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm hidden">
+        <div class="bg-[#161b22] border border-[#30363d] rounded-xl w-full max-w-2xl overflow-hidden shadow-2xl">
+            <!-- Modal Header -->
+            <div class="bg-[#21262d] border-b border-[#30363d] px-6 py-4 flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-black text-white flex items-center space-x-2">
+                        <span id="modal-rack-name">Rack A</span>
+                        <span class="text-xs bg-[#0053e2] text-white px-2 py-0.5 rounded uppercase font-semibold tracking-wider">Real-Time Telemetry</span>
+                    </h3>
+                    <p class="text-xs text-[#8b949e] mt-1" id="modal-rack-refrigerant">Refrigerant: R-407A</p>
+                </div>
+                <button onclick="closeModal()" class="text-[#8b949e] hover:text-white text-xl font-bold">&times;</button>
+            </div>
+
+            <!-- Modal Tabs -->
+            <div class="bg-[#161b22] border-b border-[#30363d] flex px-4 text-xs font-bold text-[#8b949e]">
+                <button onclick="switchModalTab('suction')" id="tab-suction" class="px-4 py-3 border-b-2 border-[#0053e2] text-white">Suction / Discharge</button>
+                <button onclick="switchModalTab('compressors')" id="tab-compressors" class="px-4 py-3 hover:text-white">Compressor Status</button>
+                <button onclick="switchModalTab('oil')" id="tab-oil" class="px-4 py-3 hover:text-white">Oil &amp; Temp Control</button>
+            </div>
+
+            <!-- Modal Content Panels -->
+            <div class="p-6">
+                <!-- Panel 1: Suction / Discharge -->
+                <div id="panel-suction" class="space-y-6">
+                    <div class="grid grid-cols-2 gap-6">
+                        <!-- Suction Side -->
+                        <div class="bg-[#21262d] border border-[#30363d] rounded-lg p-4">
+                            <h4 class="text-xs text-[#8b949e] uppercase font-bold tracking-wider mb-2">Suction Group</h4>
+                            <div class="flex justify-between items-baseline mb-4">
+                                <span class="text-3xl font-black text-white" id="telemetry-suction-psi">14.2 PSI</span>
+                                <span class="text-xs text-[#2a8703] font-semibold" id="telemetry-suction-target">Target: 13.5 PSI</span>
+                            </div>
+                            <div class="h-1.5 w-full bg-[#0d1117] rounded-full overflow-hidden mb-3">
+                                <div class="h-full bg-[#2a8703]" style="width: 72%"></div>
+                            </div>
+                            <div class="text-xs text-[#8b949e] flex justify-between">
+                                <span>Suction Temp:</span>
+                                <span class="text-white font-bold" id="telemetry-suction-temp">10.4 °F</span>
+                            </div>
+                        </div>
+
+                        <!-- Discharge Side -->
+                        <div class="bg-[#21262d] border border-[#30363d] rounded-lg p-4">
+                            <h4 class="text-xs text-[#8b949e] uppercase font-bold tracking-wider mb-2">Discharge Group</h4>
+                            <div class="flex justify-between items-baseline mb-4">
+                                <span class="text-3xl font-black text-white" id="telemetry-discharge-psi">185.0 PSI</span>
+                                <span class="text-xs text-white/50" id="telemetry-discharge-target">Target: 180.0 PSI</span>
+                            </div>
+                            <div class="h-1.5 w-full bg-[#0d1117] rounded-full overflow-hidden mb-3">
+                                <div class="h-full bg-[#ffc220]" style="width: 85%"></div>
+                            </div>
+                            <div class="text-xs text-[#8b949e] flex justify-between">
+                                <span>Discharge Temp:</span>
+                                <span class="text-white font-bold" id="telemetry-discharge-temp">124.5 °F</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Extra stats -->
+                    <div class="border-t border-[#30363d]/50 pt-4 flex justify-between text-xs text-[#8b949e]">
+                        <div>Saturated Suction Temp: <b class="text-white" id="telemetry-sat-suction">-15.2 °F</b></div>
+                        <div>Superheat: <b class="text-[#2a8703]" id="telemetry-superheat">12.6 °F</b></div>
+                        <div>Subcooling: <b class="text-[#2a8703]" id="telemetry-subcooling">8.4 °F</b></div>
+                    </div>
+                </div>
+
+                <!-- Panel 2: Compressor Status -->
+                <div id="panel-compressors" class="space-y-4 hidden">
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="bg-[#21262d] border border-[#2a8703]/30 rounded p-3 text-center">
+                            <div class="text-[10px] text-[#8b949e] uppercase font-bold">Comp 1 (Lead)</div>
+                            <div class="text-sm font-extrabold text-[#2a8703] mt-1">ACTIVE</div>
+                            <div class="text-[10px] text-[#8b949e] mt-1">Run Time: 1,421h</div>
+                        </div>
+                        <div class="bg-[#21262d] border border-[#2a8703]/30 rounded p-3 text-center">
+                            <div class="text-[10px] text-[#8b949e] uppercase font-bold">Comp 2</div>
+                            <div class="text-sm font-extrabold text-[#2a8703] mt-1">ACTIVE</div>
+                            <div class="text-[10px] text-[#8b949e] mt-1">Run Time: 984h</div>
+                        </div>
+                        <div class="bg-[#21262d] border border-[#30363d] rounded p-3 text-center">
+                            <div class="text-[10px] text-[#8b949e] uppercase font-bold">Comp 3</div>
+                            <div class="text-sm font-extrabold text-[#8b949e] mt-1">OFFLINE</div>
+                            <div class="text-[10px] text-[#8b949e] mt-1">Standby</div>
+                        </div>
+                        <div class="bg-[#21262d] border border-[#2a8703]/30 rounded p-3 text-center">
+                            <div class="text-[10px] text-[#8b949e] uppercase font-bold">Comp 4</div>
+                            <div class="text-sm font-extrabold text-[#2a8703] mt-1">ACTIVE</div>
+                            <div class="text-[10px] text-[#8b949e] mt-1">Run Time: 1,120h</div>
+                        </div>
+                    </div>
+                    <div class="bg-[#21262d] p-3 rounded-lg border border-[#30363d] text-xs text-[#8b949e] flex justify-between">
+                        <span>Total Compressors Demand:</span>
+                        <span class="text-white font-bold">75% (3 of 4 Running)</span>
+                    </div>
+                </div>
+
+                <!-- Panel 3: Oil & Temp Control -->
+                <div id="panel-oil" class="space-y-4 hidden">
+                    <div class="grid grid-cols-2 gap-4 text-xs">
+                        <div class="bg-[#21262d] p-3 rounded border border-[#30363d] flex justify-between items-center">
+                            <span class="text-[#8b949e]">Oil Level Switch:</span>
+                            <span class="bg-[#2a8703]/20 text-[#2a8703] border border-[#2a8703]/30 px-2 py-0.5 rounded font-bold text-[10px]">OK</span>
+                        </div>
+                        <div class="bg-[#21262d] p-3 rounded border border-[#30363d] flex justify-between items-center">
+                            <span class="text-[#8b949e]">Oil Pressure Differential:</span>
+                            <span class="text-white font-bold">34.2 PSI</span>
+                        </div>
+                        <div class="bg-[#21262d] p-3 rounded border border-[#30363d] flex justify-between items-center">
+                            <span class="text-[#8b949e]">Oil Temp:</span>
+                            <span class="text-white font-bold">110.2 °F</span>
+                        </div>
+                        <div class="bg-[#21262d] p-3 rounded border border-[#30363d] flex justify-between items-center">
+                            <span class="text-[#8b949e]">Receiver Level:</span>
+                            <span class="text-[#ffc220] font-bold">42.5%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-[#21262d] border-t border-[#30363d] px-6 py-4 flex justify-between items-center text-xs text-[#8b949e]">
+                <span>Status: <b class="text-[#2a8703]" id="modal-status-txt">NORMAL OPERATION</b></span>
+                <button onclick="closeModal()" class="bg-[#30363d] hover:bg-[#8b949e]/20 text-white font-bold px-4 py-1.5 rounded transition">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Status -->
+    <footer class="border-t border-[#30363d] bg-[#0d1117] px-6 py-3 text-xs text-[#8b949e] flex justify-between items-center">
+        <div>
+            <span>Code Puppy Pages Publisher | ID: <code class="text-[#ffc220] font-mono">code-puppy-d0d9c7</code></span>
+        </div>
+        <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-[#2a8703] animate-pulse"></span>
+            <span>Static HTML Autopilot (Refreshed: <span id="last-updated-ts">Just Now</span>)</span>
+        </div>
+    </footer>
+
+    <!-- Inject Store Data variables as a clean global JSON payload -->
+    <script>
+        const STORES_DATA = %%STORES_JSON_PAYLOAD%%;
+        let ACTIVE_SUB_MARKET = "367-A";
+        
+        function switchSubMarket(subMarket) {
+            ACTIVE_SUB_MARKET = subMarket;
+            ["367-A", "366-A"].forEach(sm => {
+                const btn = document.getElementById(`submarket-${sm}-tab`);
+                if (sm === subMarket) {
+                    btn.className = "px-4 py-2 border-b-2 border-[#0053e2] text-white";
+                } else {
+                    btn.className = "px-4 py-2 hover:text-white";
+                }
+            });
+            renderStoresTable();
+        }
+        
+        // Modal sub-tabs logic
+        function switchModalTab(tabName) {
+            ["suction", "compressors", "oil"].forEach(t => {
+                document.getElementById(`tab-${t}`).className = "px-4 py-3 hover:text-white";
+                document.getElementById(`panel-${t}`).classList.add("hidden");
+            });
+            document.getElementById(`tab-${tabName}`).className = "px-4 py-3 border-b-2 border-[#0053e2] text-white";
+            document.getElementById(`panel-${tabName}`).classList.remove("hidden");
+        }
+
+        // Render Stores Grid Table
+        function renderStoresTable() {
+            const tbody = document.getElementById("stores-table-body");
+            tbody.innerHTML = "";
+            
+            let globalWos = 0;
+            let activeStoresCount = 0;
+
+            for (const storeId in STORES_DATA) {
+                const s = STORES_DATA[storeId];
+                if (s.sub_market !== ACTIVE_SUB_MARKET) continue;
+                
+                activeStoresCount++;
+                globalWos += parseInt(s.wos_total || 0);
+
+                const row = document.createElement("tr");
+                row.className = "hover:bg-[#21262d]/40 transition cursor-pointer";
+                row.onclick = () => showStore(storeId);
+                
+                const alarmClass = parseInt(s.alarms) > 0 ? "text-[#ea1100] font-bold" : "text-[#8b949e]";
+                
+                row.innerHTML = `
+                    <td class="px-4 py-3.5 font-bold text-[#ffc220]">${s.store_number}</td>
+                    <td class="px-4 py-3.5"><span class="inline-block px-2.5 py-0.5 rounded text-xs font-bold ${getScoreColorsClass(s.health_score)}">${s.health_score}</span></td>
+                    <td class="px-4 py-3.5"><span class="inline-block px-2.5 py-0.5 rounded text-xs font-bold ${getScoreColorsClass(s.ref_tnt)}">${s.ref_tnt}</span></td>
+                    <td class="px-4 py-3.5"><span class="inline-block px-2.5 py-0.5 rounded text-xs font-bold ${getScoreColorsClass(s.hvac_tnt)}">${s.hvac_tnt}</span></td>
+                    <td class="px-4 py-3.5 text-center text-sm ${alarmClass}">${s.alarms}</td>
+                    <td class="px-4 py-3.5 text-center font-medium text-white">${s.open_ref_wos}</td>
+                    <td class="px-4 py-3.5 text-center font-medium text-white">${s.open_hvac_wos}</td>
+                    <td class="px-4 py-3.5 text-center font-medium text-white">${s.active_projects}</td>
+                    <td class="px-4 py-3.5 text-[#e6edf3]">${s.fs_manager}</td>
+                    <td class="px-4 py-3.5 text-xs text-[#8b949e] font-semibold">${s.hvacr_tech}</td>
+                `;
+                tbody.appendChild(row);
+            }
+            document.getElementById("stores-count-badge").innerText = `${activeStoresCount} stores`;
+            document.getElementById("global-total-wos").innerText = globalWos;
+        }
+
+        function getScoreColorsClass(percentage_str) {
+            if (!percentage_str || percentage_str === "--") return "bg-transparent text-[#8b949e]";
+            const val = parseFloat(percentage_str.replace("%", ""));
+            if (val >= 85.0) return "bg-[#2a8703]/20 text-[#2a8703] border border-[#2a8703]/30";
+            if (val >= 72.0) return "bg-[#21262d] text-[#e6edf3] border border-[#30363d]";
+            if (val >= 60.0) return "bg-[#ffc220]/20 text-[#ffc220] border border-[#ffc220]/30";
+            return "bg-[#ea1100]/20 text-[#ea1100] border border-[#ea1100]/30";
+        }
+
+        // Navigation Show/Hide
+        function showGrid() {
+            document.getElementById("grid-view").classList.remove("hidden");
+            document.getElementById("detail-view").classList.add("hidden");
+            document.getElementById("nav-current").innerText = "US Stores";
+        }
+
+        function showStore(storeId) {
+            const s = STORES_DATA[storeId];
+            document.getElementById("grid-view").classList.add("hidden");
+            document.getElementById("detail-view").classList.remove("hidden");
+            document.getElementById("nav-current").innerText = `Store ${storeId}`;
+
+            // Populate store details
+            document.getElementById("det-store-number").innerText = s.store_number;
+            document.getElementById("det-store-name").innerText = s.store_name;
+            document.getElementById("det-region").innerText = s.region;
+            document.getElementById("det-market").innerText = s.market;
+            document.getElementById("det-sub-market").innerText = s.sub_market;
+            document.getElementById("det-address").innerText = s.address;
+            document.getElementById("det-ref-tnt").innerText = s.ref_tnt;
+            document.getElementById("det-wos").innerText = s.wos_total;
+            document.getElementById("det-alarms").innerText = s.alarms;
+            document.getElementById("det-product-loss").innerText = s.product_loss;
+            document.getElementById("det-dewpoint").innerText = s.ahu_dewpoint;
+            document.getElementById("det-hvac-tnt").innerText = s.hvac_tnt;
+            document.getElementById("det-roofing").innerText = s.roofing_index;
+            document.getElementById("det-paving").innerText = s.paving_index;
+
+            // Alarms text coloring
+            const alarmDiv = document.getElementById("det-alarms");
+            if (parseInt(s.alarms) > 0) {
+                alarmDiv.className = "text-3xl font-extrabold text-[#ea1100] my-3";
+            } else {
+                alarmDiv.className = "text-3xl font-extrabold text-white my-3";
+            }
+
+            // Circular progress offsets
+            updateCircleOffset("det-ref-tnt-circle", s.ref_tnt);
+            updateCircleOffset("det-hvac-tnt-circle", s.hvac_tnt);
+
+            // Populate Racks
+            const racksContainer = document.getElementById("racks-container");
+            racksContainer.innerHTML = "";
+            s.racks.forEach(rack => {
+                const statusColor = rack.color === "red" ? "text-[#ea1100]" : "text-[#2a8703]";
+                const tntColor = parseFloat(rack.target_tnt) >= 85.0 ? "text-[#2a8703]" : "text-white";
+                
+                const card = document.createElement("div");
+                card.className = "border border-[#30363d] rounded-lg p-3 bg-[#1e222b] hover:border-[#8b949e] transition cursor-pointer";
+                card.onclick = () => openModal(rack);
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <div class="text-[10px] font-bold tracking-wider uppercase ${statusColor}">${rack.status}</div>
+                            <div class="text-sm font-bold text-white">${rack.name}</div>
+                            <div class="text-xs text-[#8b949e]">${rack.refrigerant}</div>
+                        </div>
+                        <span class="text-xs bg-[#21262d] px-2 py-0.5 rounded text-white font-mono">${rack.score}</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 mt-3 text-center border-t border-[#30363d]/50 pt-2 text-[10px]">
+                        <div>
+                            <div class="text-[#8b949e] font-semibold">Work Orders</div>
+                            <div class="text-white font-bold text-xs">${rack.wos}</div>
+                        </div>
+                        <div>
+                            <div class="text-[#8b949e] font-semibold">Alarms</div>
+                            <div class="text-white font-bold text-xs">${rack.alarms}</div>
+                        </div>
+                        <div>
+                            <div class="text-[#8b949e] font-semibold">Time in target</div>
+                            <div class="text-xs font-bold ${tntColor}">${rack.target_tnt}</div>
+                        </div>
+                    </div>
+                `;
+                racksContainer.appendChild(card);
+            });
+
+            // Populate Cases
+            const casesContainer = document.getElementById("cases-table-body");
+            casesContainer.innerHTML = "";
+            document.getElementById("det-cases-count").innerText = `${s.cases.length} cases`;
+            
+            s.cases.forEach(c => {
+                const alarmClass = parseInt(c.alarms) > 0 ? "text-[#ea1100] font-bold" : "text-[#8b949e]";
+                const row = document.createElement("tr");
+                row.className = "hover:bg-[#21262d]/20 transition";
+                row.innerHTML = `
+                    <td class="px-3 py-2.5 font-bold text-white">${c.name}</td>
+                    <td class="px-3 py-2.5 text-[#8b949e]">${c.sensor}</td>
+                    <td class="px-3 py-2.5 text-[#8b949e]">${c.mod}</td>
+                    <td class="px-3 py-2.5 text-center ${alarmClass}">${c.alarms}</td>
+                    <td class="px-3 py-2.5 text-center text-[#e6edf3]">${c.wos}</td>
+                    <td class="px-3 py-2.5"><span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold ${getScoreColorsClass(c.tnt)}">${c.tnt}</span></td>
+                    <td class="px-3 py-2.5 text-[#e6edf3] font-mono">${c.temp}</td>
+                    <td class="px-3 py-2.5 text-[#8b949e] font-mono">${c.setpoint}</td>
+                `;
+                casesContainer.appendChild(row);
+            });
+        }
+
+        function updateCircleOffset(circleId, percentageStr) {
+            const circle = document.getElementById(circleId);
+            if (!percentageStr || percentageStr === "--") {
+                circle.setAttribute("stroke-dashoffset", "175.9");
+                return;
+            }
+            const val = parseFloat(percentageStr.replace("%", ""));
+            const offset = Math.max(0.0, 175.9 - (175.9 * val / 100.0));
+            circle.setAttribute("stroke-dashoffset", offset);
+            
+            // stroke color matching
+            if (val >= 85.0) circle.setAttribute("stroke", "#2a8703");
+            else if (val >= 72.0) circle.setAttribute("stroke", "#e6edf3");
+            else if (val >= 60.0) circle.setAttribute("stroke", "#ffc220");
+            else circle.setAttribute("stroke", "#ea1100");
+        }
+
+        // Real-Time Telemetry Modal Functions
+        function openModal(rack) {
+            const modal = document.getElementById("telemetry-modal");
+            document.getElementById("modal-rack-name").innerText = rack.name;
+            document.getElementById("modal-rack-refrigerant").innerText = `Refrigerant: ${rack.refrigerant}`;
+            
+            // Parse actual TNT to set values realistically
+            const tntVal = parseFloat(rack.target_tnt);
+            const isMedium = rack.name.includes("S");
+            const isAlarm = rack.status.includes("ALARM");
+
+            // Define suction/discharge targets deterministically based on whether medium or low temp rack
+            const sTarget = isMedium ? 15.0 : 13.5;
+            const dTarget = isMedium ? 180.0 : 185.0;
+
+            const suctionPsi = (sTarget + (isAlarm ? 3.8 : (tntVal < 80.0 ? 1.5 : -0.2))).toFixed(1);
+            const dischargePsi = (dTarget + (isAlarm ? 24.0 : (tntVal < 80.0 ? 8.0 : 2.0))).toFixed(1);
+
+            const suctionTemp = isMedium ? "18.4 °F" : "10.4 °F";
+            const dischargeTemp = isMedium ? "114.5 °F" : "124.5 °F";
+
+            document.getElementById("telemetry-suction-psi").innerText = `${suctionPsi} PSI`;
+            document.getElementById("telemetry-suction-target").innerText = `Target: ${sTarget} PSI`;
+            document.getElementById("telemetry-discharge-psi").innerText = `${dischargePsi} PSI`;
+            document.getElementById("telemetry-discharge-target").innerText = `Target: ${dTarget} PSI`;
+            
+            document.getElementById("telemetry-suction-temp").innerText = suctionTemp;
+            document.getElementById("telemetry-discharge-temp").innerText = dischargeTemp;
+            
+            // Supers & subcooling
+            document.getElementById("telemetry-sat-suction").innerText = isMedium ? "15.2 °F" : "-15.2 °F";
+            document.getElementById("telemetry-superheat").innerText = isAlarm ? "19.4 °F" : "12.6 °F";
+            document.getElementById("telemetry-superheat").className = isAlarm ? "text-[#ea1100] font-bold" : "text-[#2a8703]";
+            
+            const statusTxt = document.getElementById("modal-status-txt");
+            if (isAlarm) {
+                statusTxt.innerText = "CRITICAL: HIGH DISCHARGE PRESSURE ALERT";
+                statusTxt.className = "text-[#ea1100] font-extrabold";
+            } else {
+                statusTxt.innerText = "NORMAL OPERATION";
+                statusTxt.className = "text-[#2a8703] font-bold";
+            }
+
+            switchModalTab("suction");
+            modal.classList.remove("hidden");
+        }
+
+        function closeModal() {
+            document.getElementById("telemetry-modal").classList.add("hidden");
+        }
+
+        // Timestamp
+        document.getElementById("last-updated-ts").innerText = new Date().toLocaleTimeString();
+
+        // Bootstrapping
+        renderStoresTable();
+    </script>
+</body>
+</html>
