@@ -186,16 +186,15 @@
 
             <!-- Tabs Bar -->
             <div class="mb-6 border-b border-[#30363d] flex space-x-2 overflow-x-auto text-sm">
-                <button class="px-4 py-2 border-b-2 border-[#0053e2] text-white font-bold whitespace-nowrap">Smart Insights</button>
-                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">Work Orders</button>
-                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">Alarms</button>
-                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">Telemetry</button>
-                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">2D Store Layout</button>
-                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">Assets</button>
-                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">Store Reviews</button>
-                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">Store Info</button>
-                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">Active Projects</button>
-                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap">3D Digital Twin</button>
+                <button id="tab-btn-insights" onclick="switchStoreTab('insights')" class="px-4 py-2 border-b-2 border-[#0053e2] text-white font-bold whitespace-nowrap">Smart Insights</button>
+                <button id="tab-btn-alarms" onclick="switchStoreTab('alarms')" class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap font-bold">Alarms</button>
+                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap cursor-not-allowed opacity-50">Telemetry</button>
+                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap cursor-not-allowed opacity-50">2D Store Layout</button>
+                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap cursor-not-allowed opacity-50">Assets</button>
+                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap cursor-not-allowed opacity-50">Store Reviews</button>
+                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap cursor-not-allowed opacity-50">Store Info</button>
+                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap cursor-not-allowed opacity-50">Active Projects</button>
+                <button class="px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap cursor-not-allowed opacity-50">3D Digital Twin</button>
             </div>
 
             <!-- Key metrics grid specific to store -->
@@ -263,10 +262,10 @@
             </div>
 
             <!-- Refrigeration Performance Section -->
-            <div class="mb-6">
+            <div id="refrigeration-perf-section" class="mb-6">
                 <h2 class="text-lg font-bold text-white mb-3 flex items-center space-x-2">
                     <span>Refrigeration performance</span>
-                    <span class="text-xs text-[#8b949e] font-medium">(Sub-Market 367-A)</span>
+                    <span class="text-xs text-[#8b949e] font-medium" id="det-submarket-header">(Sub-Market 367-A)</span>
                 </h2>
                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     <!-- Left Sidebar: Racks -->
@@ -313,6 +312,32 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alarms History Section (Visible only when Alarms tab is clicked!) -->
+            <div id="alarms-section" class="mb-6 hidden">
+                <h2 class="text-lg font-bold text-white mb-3 flex items-center space-x-2">
+                    <span>Active &amp; Recent Alarms</span>
+                    <span class="text-xs text-[#8b949e] font-medium" id="det-alarms-submarket-header">(Sub-Market 367-A)</span>
+                </h2>
+                <div class="bg-[#161b22] border border-[#30363d] rounded-lg p-4">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-[#21262d]/50 border-b border-[#30363d] text-[#8b949e] uppercase tracking-wider font-semibold">
+                                    <th class="px-3 py-2">Priority</th>
+                                    <th class="px-3 py-2">Alarm Type</th>
+                                    <th class="px-3 py-2">Severity</th>
+                                    <th class="px-3 py-2">Trigger Date</th>
+                                    <th class="px-3 py-2">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[#30363d]" id="alarms-table-body">
+                                <!-- Injected by script -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -476,6 +501,26 @@
             });
             renderStoresTable();
         }
+
+        // Store Detail Tab switcher
+        function switchStoreTab(tab) {
+            const insightsBtn = document.getElementById("tab-btn-insights");
+            const alarmsBtn = document.getElementById("tab-btn-alarms");
+            const perfSection = document.getElementById("refrigeration-perf-section");
+            const alarmsSection = document.getElementById("alarms-section");
+            
+            if (tab === "insights") {
+                insightsBtn.className = "px-4 py-2 border-b-2 border-[#0053e2] text-white font-bold whitespace-nowrap";
+                alarmsBtn.className = "px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap font-bold";
+                perfSection.classList.remove("hidden");
+                alarmsSection.classList.add("hidden");
+            } else if (tab === "alarms") {
+                alarmsBtn.className = "px-4 py-2 border-b-2 border-[#0053e2] text-white font-bold whitespace-nowrap";
+                insightsBtn.className = "px-4 py-2 text-[#8b949e] hover:text-white whitespace-nowrap font-bold";
+                perfSection.classList.add("hidden");
+                alarmsSection.classList.remove("hidden");
+            }
+        }
         
         // Modal sub-tabs logic
         function switchModalTab(tabName) {
@@ -547,6 +592,9 @@
             document.getElementById("grid-view").classList.add("hidden");
             document.getElementById("detail-view").classList.remove("hidden");
             document.getElementById("nav-current").innerText = `Store ${storeId}`;
+            
+            // Reset to insights tab on new store load
+            switchStoreTab('insights');
 
             // Populate store details
             document.getElementById("det-store-number").innerText = s.store_number;
@@ -563,6 +611,10 @@
             document.getElementById("det-hvac-tnt").innerText = s.hvac_tnt;
             document.getElementById("det-roofing").innerText = s.roofing_index;
             document.getElementById("det-paving").innerText = s.paving_index;
+
+            // Update sub-market headers dynamically!
+            document.getElementById("det-submarket-header").innerText = `(Sub-Market ${s.sub_market})`;
+            document.getElementById("det-alarms-submarket-header").innerText = `(Sub-Market ${s.sub_market})`;
 
             // Alarms text coloring
             const alarmDiv = document.getElementById("det-alarms");
@@ -634,6 +686,27 @@
                 `;
                 casesContainer.appendChild(row);
             });
+
+            // Populate Alarms Table dynamically from BigQuery alarms_list!
+            const alarmsBody = document.getElementById("alarms-table-body");
+            alarmsBody.innerHTML = "";
+            if (s.alarms_list && s.alarms_list.length > 0) {
+                s.alarms_list.forEach(al => {
+                    const row = document.createElement("tr");
+                    row.className = "hover:bg-[#21262d]/20 transition";
+                    const priorityClass = al.priority_label === "High" ? "text-red-500 font-bold" : "text-yellow-500";
+                    row.innerHTML = `
+                        <td class="px-3 py-2.5 font-bold ${priorityClass}">${al.priority_label}</td>
+                        <td class="px-3 py-2.5 text-[#e6edf3] font-semibold">${al.alarm_type}</td>
+                        <td class="px-3 py-2.5 text-[#8b949e] font-mono">${al.severity}</td>
+                        <td class="px-3 py-2.5 text-[#8b949e]">${al.date}</td>
+                        <td class="px-3 py-2.5"><span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-red-600/10 text-red-500 border border-red-500/20">ACTIVE</span></td>
+                    `;
+                    alarmsBody.appendChild(row);
+                });
+            } else {
+                alarmsBody.innerHTML = `<tr><td colspan="5" class="px-3 py-8 text-center text-[#8b949e] font-medium font-mono">No active alarms recorded for this store.</td></tr>`;
+            }
         }
 
         function updateCircleOffset(circleId, percentageStr) {
@@ -661,18 +734,23 @@
             
             // Parse actual TNT to set values realistically
             const tntVal = parseFloat(rack.target_tnt);
-            const isMedium = rack.name.includes("S");
+            const isMedium = rack.name.includes("S") || rack.name.includes("MT");
             const isAlarm = rack.status.includes("ALARM");
+
+            // Generate deterministic but highly realistic and varying values per store and rack!
+            const storeNum = document.getElementById("det-store-number").innerText || "1291";
+            const rackHash = (rack.name.charCodeAt(rack.name.length - 1) || 1) + parseInt(storeNum);
+            const variation = (rackHash % 7) - 3.5; // Ranges from -3.5 to +3.5
 
             // Define suction/discharge targets deterministically based on whether medium or low temp rack
             const sTarget = isMedium ? 15.0 : 13.5;
             const dTarget = isMedium ? 180.0 : 185.0;
 
-            const suctionPsi = (sTarget + (isAlarm ? 3.8 : (tntVal < 80.0 ? 1.5 : -0.2))).toFixed(1);
-            const dischargePsi = (dTarget + (isAlarm ? 24.0 : (tntVal < 80.0 ? 8.0 : 2.0))).toFixed(1);
+            const suctionPsi = (sTarget + (isAlarm ? 3.8 : (tntVal < 85.0 ? 1.2 : -0.3)) + (variation * 0.25)).toFixed(1);
+            const dischargePsi = (dTarget + (isAlarm ? 22.0 : (tntVal < 85.0 ? 6.5 : 1.5)) + (variation * 1.5)).toFixed(1);
 
-            const suctionTemp = isMedium ? "18.4 °F" : "10.4 °F";
-            const dischargeTemp = isMedium ? "114.5 °F" : "124.5 °F";
+            const suctionTemp = (isMedium ? (18.4 + (variation * 0.3)) : (10.4 + (variation * 0.2))).toFixed(1) + " °F";
+            const dischargeTemp = (isMedium ? (114.5 + (variation * 1.2)) : (124.5 + (variation * 1.8))).toFixed(1) + " °F";
 
             document.getElementById("telemetry-suction-psi").innerText = `${suctionPsi} PSI`;
             document.getElementById("telemetry-suction-target").innerText = `Target: ${sTarget} PSI`;
@@ -683,8 +761,8 @@
             document.getElementById("telemetry-discharge-temp").innerText = dischargeTemp;
             
             // Supers & subcooling
-            document.getElementById("telemetry-sat-suction").innerText = isMedium ? "15.2 °F" : "-15.2 °F";
-            document.getElementById("telemetry-superheat").innerText = isAlarm ? "19.4 °F" : "12.6 °F";
+            document.getElementById("telemetry-sat-suction").innerText = isMedium ? (15.2 + (variation * 0.1)).toFixed(1) + " °F" : (-15.2 + (variation * 0.1)).toFixed(1) + " °F";
+            document.getElementById("telemetry-superheat").innerText = isAlarm ? "19.4 °F" : (12.6 + (variation * 0.15)).toFixed(1) + " °F";
             document.getElementById("telemetry-superheat").className = isAlarm ? "text-[#ea1100] font-bold" : "text-[#2a8703]";
             
             const statusTxt = document.getElementById("modal-status-txt");

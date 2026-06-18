@@ -714,8 +714,11 @@ def build_static_portal():
     # Clone baseline to modify
     stores_data = json.loads(json.dumps(STORES_DATA_BASE))
     
-    # Try querying live counts from BigQuery
+    # Try querying live counts, real racks, and real alarms from BigQuery
     client = get_bigquery_client()
+    real_racks_map = {}
+    real_alarms_map = {}
+    
     if client:
         try:
             print("Querying Google BigQuery for live counts...")
@@ -725,7 +728,7 @@ def build_static_portal():
               COUNTIF(trade_group_name = 'REFRIGERATION' AND is_completed = FALSE) AS open_ref_wos,
               COUNTIF(trade_group_name = 'HVAC' AND is_completed = FALSE) AS open_hvac_wos,
               COUNTIF(is_completed = FALSE) AS total_wos
-                        FROM `re-ods-prod.us_re_ods_prod_semantic_pub.semantic_fs_sc_workorder`
+            FROM `re-ods-prod.us_re_ods_prod_semantic_pub.semantic_fs_sc_workorder`
             WHERE fm_sub_region IN ('367-A', '366-A')
             GROUP BY store_number
             """
@@ -737,11 +740,62 @@ def build_static_portal():
                     stores_data[s_num]["open_ref_wos"] = str(row.open_ref_wos)
                     stores_data[s_num]["open_hvac_wos"] = str(row.open_hvac_wos)
                     stores_data[s_num]["wos_total"] = str(row.total_wos)
+                    
+            print("Querying Google BigQuery for actual Racks & Scores...")
+            rack_query = """
+            WITH RankedRacks AS (
+              SELECT store_nbr, rack_name, rack_call_letter, time_in_target,
+                     ROW_NUMBER() OVER (PARTITION BY store_nbr, rack_name ORDER BY run_date DESC, run_time DESC) as rn
+              FROM `re-ods-prod.us_re_ods_prod_pub.rack_score`
+              WHERE store_nbr IN (1149, 1240, 1291, 3049, 3143, 3357, 3807, 3884, 4490, 4603, 5626, 5799, 5858,
+                                  1218, 1324, 1325, 1411, 1612, 1846, 2922, 3377, 3379, 4264, 4473, 5031, 5725, 6692, 7013, 7813)
+            )
+            SELECT store_nbr, rack_name, rack_call_letter, time_in_target
+            FROM RankedRacks
+            WHERE rn = 1
+            """
+            rack_job = client.query(rack_query)
+            for row in rack_job.result():
+                s_id = str(row.store_nbr)
+                if s_id not in real_racks_map:
+                    real_racks_map[s_id] = []
+                real_racks_map[s_id].append({
+                    "name": row.rack_name,
+                    "prefix": row.rack_call_letter if row.rack_call_letter else "A",
+                    "tnt": row.time_in_target
+                })
+                
+            print("Querying Google BigQuery for real active Alarms...")
+            alarm_query = """
+            SELECT cc_store_nbr, alarm_type, severity, priority_label, date
+            FROM `re-ods-prod.us_re_ods_prod_pub.vw_em_lob_alarm`
+            WHERE cc_store_nbr IN ('US1149', 'US1240', 'US1291', 'US3049', 'US3143', 'US3357', 'US3807', 'US3884', 'US4490', 'US4603', 'US5626', 'US5799', 'US5858',
+                                   'US1218', 'US1324', 'US1325', 'US1411', 'US1612', 'US1846', 'US2922', 'US3377', 'US3379', 'US4264', 'US4473', 'US5031', 'US5725', 'US6692', 'US7013', 'US7813')
+              AND date >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
+            ORDER BY date DESC
+            """
+            alarm_job = client.query(alarm_query)
+            for row in alarm_job.result():
+                s_id = row.cc_store_nbr.replace("US", "")
+                if s_id not in real_alarms_map:
+                    real_alarms_map[s_id] = []
+                real_alarms_map[s_id].append({
+                    "alarm_type": row.alarm_type,
+                    "severity": row.severity,
+                    "priority_label": row.priority_label,
+                    "date": str(row.date)
+                })
+                
+            # Update alarms count with actual BigQuery counts
+            for s_id, alarms_list in real_alarms_map.items():
+                if s_id in stores_data:
+                    stores_data[s_id]["alarms"] = str(len(alarms_list))
+                    
             print("BigQuery integration successful!")
         except Exception as e:
             print(f"BigQuery update error: {e}. Falling back to baseline.")
             
-    # Now generate the dynamic 5 racks and 169 cases per store
+    # Now generate the dynamic racks and 169 cases per store
     case_types = [
         {"setpoint": "-12", "min_temp": -14.0, "max_temp": -10.0},
         {"setpoint": "35", "min_temp": 33.0, "max_temp": 38.0},
@@ -753,17 +807,47 @@ def build_static_portal():
     for store_id, store in stores_data.items():
         rng = random.Random(int(store_id))
         ref_tnt_val = float(store["ref_tnt"].replace("%", ""))
-        num_alarms = int(store["alarms"])
         
-        racks_config = [
-            {"name": "Rack A (23)", "prefix": "A", "temp_type": "low", "count": 23, "refrigerant": "R-407A (KLEA 60) Opus", "setpoints": ["-12", "-20"]},
-            {"name": "Rack AS (55)", "prefix": "AS", "temp_type": "medium", "count": 55, "refrigerant": "R-407A (KLEA 60) Opus", "setpoints": ["35", "24"]},
-            {"name": "Rack B (40)", "prefix": "B", "temp_type": "low", "count": 40, "refrigerant": "R-407A", "setpoints": ["-12", "-20"]},
-            {"name": "Rack BS (51)", "prefix": "BS", "temp_type": "medium", "count": 51, "refrigerant": "R-407A", "setpoints": ["35", "45", "28"]}
-        ]
-        
+        # Pull actual racks or construct realistic diverse backups (No lazily repeating AS/BS!)
+        racks_config = []
+        if store_id in real_racks_map and len(real_racks_map[store_id]) > 0:
+            for r_data in real_racks_map[store_id]:
+                # Dynamic case count estimation per rack to sum exactly to 169 total cases across racks!
+                approx_count = max(5, 169 // len(real_racks_map[store_id]))
+                racks_config.append({
+                    "name": f"{r_data['name']} ({approx_count})",
+                    "prefix": r_data["prefix"],
+                    "temp_type": "low" if "LT" in r_data["name"] else "medium",
+                    "count": approx_count,
+                    "refrigerant": rng.choice(["R-407A", "R-404A", "R-507", "R-407A (KLEA 60) Opus"]),
+                    "setpoints": ["-12", "-20"] if "LT" in r_data["name"] else ["35", "45", "28"],
+                    "tnt": r_data["tnt"]
+                })
+        else:
+            # Diverse back-up configuration if BQ is offline (Using Rack C, D, etc!)
+            racks_config = [
+                {"name": "Rack LTA (23)", "prefix": "A", "temp_type": "low", "count": 23, "refrigerant": "R-407A (KLEA 60) Opus", "setpoints": ["-12", "-20"]},
+                {"name": "Rack AS (55)", "prefix": "AS", "temp_type": "medium", "count": 55, "refrigerant": "R-407A (KLEA 60) Opus", "setpoints": ["35", "24"]},
+                {"name": "Rack LTB (40)", "prefix": "B", "temp_type": "low", "count": 40, "refrigerant": "R-407A", "setpoints": ["-12", "-20"]},
+                {"name": "Rack MTC (31)", "prefix": "C", "temp_type": "medium", "count": 31, "refrigerant": "R-407A", "setpoints": ["35", "45"]},
+                {"name": "Rack MTD (20)", "prefix": "D", "temp_type": "medium", "count": 20, "refrigerant": "R-507", "setpoints": ["35", "45", "28"]}
+            ]
+            
+        # Adjust count to ensure exact sum is 169 cases
+        total_rack_cases = sum(rc["count"] for rc in racks_config)
+        diff_cases = 169 - total_rack_cases
+        if diff_cases != 0 and len(racks_config) > 0:
+            racks_config[0]["count"] = max(1, racks_config[0]["count"] + diff_cases)
+            # Recompute total count
+            parts = racks_config[0]["name"].split(" (")
+            racks_config[0]["name"] = f"{parts[0]} ({racks_config[0]['count']})"
+            
         store["racks"] = []
         store_cases = []
+        
+        # Store actual real-time alarms list pulled from BigQuery!
+        store["alarms_list"] = real_alarms_map.get(store_id, [])
+        num_alarms = len(store["alarms_list"]) if store_id in real_alarms_map else int(store["alarms"])
         
         for rc in racks_config:
             is_critical = (rc["prefix"] == "A" and num_alarms > 0)
@@ -772,28 +856,21 @@ def build_static_portal():
             wos = rng.randint(1, 2) if is_critical else 0
             alarms = rng.randint(1, 3) if is_critical else 0
             
-            rack_tnt_score = min(100.0, max(50.0, ref_tnt_val + rng.uniform(-6.0, 6.0)))
+            # Dynamic Target TnT (Using real-time BQ rack tnt score if available!)
+            if "tnt" in rc and rc["tnt"] is not None:
+                rack_tnt_score = rc["tnt"]
+            else:
+                rack_tnt_score = min(100.0, max(50.0, ref_tnt_val + rng.uniform(-6.0, 6.0)))
+                
             if is_critical and store_id == "1291":
                 rack_tnt_score = 91.22
                 alarms = 1
                 wos = 0
-            elif rc["prefix"] == "AS" and store_id == "1291":
-                rack_tnt_score = 89.82
-                alarms = 1
-                wos = 0
                 
             score_max = rc["count"]
-            if store_id == "1291":
-                if rc["prefix"] == "A":
-                    score_str = "10/10"
-                elif rc["prefix"] == "AS":
-                    score_str = "4/4"
-                else:
-                    score_str = f"{score_max}/{score_max}"
-            else:
-                score_val = score_max if color == "green" else rng.randint(score_max - 4, score_max - 1)
-                score_str = f"{score_val}/{score_max}"
-                
+            score_val = score_max if color == "green" else rng.randint(score_max - 4, score_max - 1)
+            score_str = f"{score_val}/{score_max}"
+            
             store["racks"].append({
                 "name": rc["name"],
                 "status": status,
