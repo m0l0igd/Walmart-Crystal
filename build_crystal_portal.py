@@ -767,24 +767,27 @@ def build_static_portal():
                 
             print("Querying Google BigQuery for real active Alarms...")
             alarm_query = """
-            SELECT cc_store_nbr, alarm_type, severity, priority_label, date
-            FROM `re-ods-prod.us_re_ods_prod_pub.vw_em_lob_alarm`
-            WHERE cc_store_nbr IN ('US1149', 'US1240', 'US1291', 'US3049', 'US3143', 'US3357', 'US3807', 'US3884', 'US4490', 'US4603', 'US5626', 'US5799', 'US5858',
-                                   'US1218', 'US1324', 'US1325', 'US1411', 'US1612', 'US1846', 'US2922', 'US3377', 'US3379', 'US4264', 'US4473', 'US5031', 'US5725', 'US6692', 'US7013', 'US7813')
-              AND date >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
+            SELECT asset.location.storeNo, faultCategory, severity, status, date, faultDetails.ruleName AS rule_name
+            FROM `re-ods-prod.us_re_ods_prod_pub.crystal_self_service_alarms`
+            WHERE asset.location.storeNo IN (1149, 1240, 1291, 3049, 3143, 3357, 3807, 3884, 4490, 4603, 5626, 5799, 5858,
+                                              1218, 1324, 1325, 1411, 1612, 1846, 2922, 3377, 3379, 4264, 4473, 5031, 5725, 6692, 7013, 7813)
+              AND date >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
             ORDER BY date DESC
             """
             alarm_job = client.query(alarm_query)
             for row in alarm_job.result():
-                s_id = row.cc_store_nbr.replace("US", "")
+                s_id = str(row.storeNo)
                 if s_id not in real_alarms_map:
                     real_alarms_map[s_id] = []
-                real_alarms_map[s_id].append({
-                    "alarm_type": row.alarm_type,
-                    "severity": row.severity,
-                    "priority_label": row.priority_label,
-                    "date": str(row.date)
-                })
+                # Keep list limited to 15 alarms to avoid bloating JSON payload
+                if len(real_alarms_map[s_id]) < 15:
+                    sev_upper = row.severity.upper() if row.severity else "WARNING"
+                    real_alarms_map[s_id].append({
+                        "alarm_type": row.rule_name if row.rule_name else "Temperature Breach",
+                        "severity": sev_upper,
+                        "priority_label": "High" if (sev_upper == "CRITICAL" or sev_upper == "TERMINAL" or sev_upper == "MAJOR") else "Medium",
+                        "date": str(row.date)
+                    })
                 
             # Update alarms count with actual BigQuery counts
             for s_id, alarms_list in real_alarms_map.items():
