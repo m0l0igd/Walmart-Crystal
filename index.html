@@ -553,13 +553,13 @@
         ],
         "alarms_list": [
             {
-                "alarm_type": "Rack Triage",
+                "alarm_type": "UPC High temperature",
                 "severity": "CRITICAL",
                 "priority_label": "High",
                 "date": "2026-06-23"
             },
             {
-                "alarm_type": "UPC High temperature",
+                "alarm_type": "Rack Triage",
                 "severity": "CRITICAL",
                 "priority_label": "High",
                 "date": "2026-06-23"
@@ -27062,14 +27062,14 @@
         ],
         "alarms_list": [
             {
-                "alarm_type": "Rack Triage",
-                "severity": "CRITICAL",
+                "alarm_type": "TCO2RL",
+                "severity": "TERMINAL",
                 "priority_label": "High",
                 "date": "2026-06-23"
             },
             {
-                "alarm_type": "TCO2RL",
-                "severity": "TERMINAL",
+                "alarm_type": "Rack Triage",
+                "severity": "CRITICAL",
                 "priority_label": "High",
                 "date": "2026-06-23"
             }
@@ -52226,7 +52226,13 @@
 
             // Generate deterministic but highly realistic and varying values per store and rack!
             const storeNum = document.getElementById("det-store-number").innerText || "1291";
-            const rackHash = (rack.name.charCodeAt(rack.name.length - 1) || 1) + parseInt(storeNum);
+            
+            // Calculate a true hash of the entire rack name (not just the last character, which was always ')'!)
+            let nameSum = 0;
+            for (let i = 0; i < rack.name.length; i++) {
+                nameSum += rack.name.charCodeAt(i);
+            }
+            const rackHash = nameSum + parseInt(storeNum);
             const variation = (rackHash % 7) - 3.5; // Ranges from -3.5 to +3.5
 
             // Define suction/discharge targets deterministically based on whether medium or low temp rack
