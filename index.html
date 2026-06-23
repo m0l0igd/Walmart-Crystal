@@ -590,13 +590,13 @@
         ],
         "alarms_list": [
             {
-                "alarm_type": "UPC High temperature (RTU-5)",
+                "alarm_type": "Rack Controller Alarm (Case B01a)",
                 "severity": "CRITICAL",
                 "priority_label": "High",
                 "date": "2026-06-23"
             },
             {
-                "alarm_type": "Rack Controller Alarm (Case B01a)",
+                "alarm_type": "UPC High temperature (RTU-5)",
                 "severity": "CRITICAL",
                 "priority_label": "High",
                 "date": "2026-06-23"
@@ -52371,89 +52371,6 @@
             const statusTxt = document.getElementById("modal-status-txt");
             statusTxt.innerText = "LIVE CONNECTION OFFLINE / DATA NOT AVAILABLE";
             statusTxt.className = "text-[#8b949e] font-bold";
-
-            switchModalTab("suction");
-            modal.classList.remove("hidden");
-        }
-            
-            // Generate deterministic compressor run times and statuses
-            const run1 = 1200 + (rackHash % 400);
-            const run2 = 800 + (rackHash % 300);
-            const run4 = 1000 + (rackHash % 250);
-            const run3 = 1100 + (rackHash % 200);
-            
-            document.getElementById("telemetry-comp1-rt").innerText = `Run Time: ${run1.toLocaleString()}h`;
-            document.getElementById("telemetry-comp2-rt").innerText = `Run Time: ${run2.toLocaleString()}h`;
-            document.getElementById("telemetry-comp4-rt").innerText = `Run Time: ${run4.toLocaleString()}h`;
-            
-            // Comp 3 state (ALARM state for alarms to match first screenshot, offline standby or active otherwise)
-            if (isAlarm) {
-                // Compressor A3 is in Alarm / Fault (light pink / red border)
-                document.getElementById("telemetry-comp3-status").innerText = "FAULT / ALARM";
-                document.getElementById("telemetry-comp3-status").className = "text-sm font-extrabold text-[#ea1100] mt-1";
-                document.getElementById("telemetry-comp3-card").className = "bg-[#ffebe6] border border-[#ffbdad] rounded p-3 text-center";
-                document.getElementById("telemetry-comp3-rt").innerText = `Fail Code: High Temp`;
-                
-                // Other compressors are active
-                ["1", "2", "4"].forEach(idx => {
-                    document.getElementById(`telemetry-comp${idx}-status`).innerText = "ACTIVE";
-                    document.getElementById(`telemetry-comp${idx}-status`).className = "text-sm font-extrabold text-[#2a8703] mt-1";
-                    document.getElementById(`telemetry-comp${idx}-card`).className = "bg-[#e3fcef] border border-[#2a8703]/30 rounded p-3 text-center";
-                });
-            } else {
-                const comp3Active = (rackHash % 3 === 0);
-                if (comp3Active) {
-                    document.getElementById("telemetry-comp3-status").innerText = "ACTIVE";
-                    document.getElementById("telemetry-comp3-status").className = "text-sm font-extrabold text-[#2a8703] mt-1";
-                    document.getElementById("telemetry-comp3-card").className = "bg-[#21262d] border border-[#2a8703]/30 rounded p-3 text-center";
-                    document.getElementById("telemetry-comp3-rt").innerText = `Run Time: ${run3.toLocaleString()}h`;
-                } else {
-                    document.getElementById("telemetry-comp3-status").innerText = "OFFLINE";
-                    document.getElementById("telemetry-comp3-status").className = "text-sm font-extrabold text-[#8b949e] mt-1";
-                    document.getElementById("telemetry-comp3-card").className = "bg-[#21262d] border border-[#30363d] rounded p-3 text-center";
-                    document.getElementById("telemetry-comp3-rt").innerText = "Standby";
-                }
-                
-                ["1", "2", "4"].forEach(idx => {
-                    document.getElementById(`telemetry-comp${idx}-status`).innerText = "ACTIVE";
-                    document.getElementById(`telemetry-comp${idx}-status`).className = "text-sm font-extrabold text-[#2a8703] mt-1";
-                    document.getElementById(`telemetry-comp${idx}-card`).className = "bg-[#21262d] border border-[#2a8703]/30 rounded p-3 text-center";
-                });
-            }
-            
-            const comp3Running = (!isAlarm && (rackHash % 3 === 0));
-            const runningCount = isAlarm ? 3 : (comp3Running ? 4 : 3);
-            const demandPct = isAlarm ? 75 : (comp3Running ? 100 : 75);
-            document.getElementById("telemetry-comp-demand").innerText = `${demandPct}% (${runningCount} of 4 Running)`;
-            
-            // Oil and Temp Control tab
-            const oilOk = !isAlarm || (rackHash % 2 !== 0);
-            const oilSwitch = document.getElementById("telemetry-oil-switch");
-            if (oilOk) {
-                oilSwitch.innerText = "OK";
-                oilSwitch.className = "bg-[#2a8703]/20 text-[#2a8703] border border-[#2a8703]/30 px-2 py-0.5 rounded font-bold text-[10px]";
-            } else {
-                oilSwitch.innerText = "LOW";
-                oilSwitch.className = "bg-[#ea1100]/20 text-[#ea1100] border border-[#ea1100]/30 px-2 py-0.5 rounded font-bold text-[10px]";
-            }
-            
-            const oilPress = (30.0 + (variation * 1.5)).toFixed(1);
-            document.getElementById("telemetry-oil-press").innerText = `${oilPress} PSI`;
-            
-            const oilTemp = (105.0 + (variation * 3.5)).toFixed(1);
-            document.getElementById("telemetry-oil-temp").innerText = `${oilTemp} °F`;
-            
-            document.getElementById("telemetry-receiver-level").innerText = `${receiverVal}%`;
-            document.getElementById("telemetry-receiver-level").className = parseFloat(receiverVal) < 41.0 ? "text-[#ea1100] font-bold" : "text-[#ffc220] font-bold";
-            
-            const statusTxt = document.getElementById("modal-status-txt");
-            if (isAlarm) {
-                statusTxt.innerText = "CRITICAL: HIGH DISCHARGE PRESSURE ALERT";
-                statusTxt.className = "text-[#ea1100] font-extrabold";
-            } else {
-                statusTxt.innerText = "NORMAL OPERATION";
-                statusTxt.className = "text-[#2a8703] font-bold";
-            }
 
             switchModalTab("suction");
             modal.classList.remove("hidden");
