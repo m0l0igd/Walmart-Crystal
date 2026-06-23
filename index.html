@@ -297,14 +297,14 @@
                             <table class="w-full text-left border-collapse text-xs">
                                 <thead>
                                     <tr class="bg-[#21262d]/50 border-b border-[#30363d] text-[#8b949e] uppercase tracking-wider font-semibold">
-                                        <th class="px-3 py-2">Case Name</th>
-                                        <th class="px-3 py-2">Sensor Label</th>
-                                        <th class="px-3 py-2">Mod Label</th>
-                                        <th class="px-3 py-2 text-center">Alarms</th>
-                                        <th class="px-3 py-2 text-center">Work Orders</th>
-                                        <th class="px-3 py-2">Time Within Target</th>
-                                        <th class="px-3 py-2">Latest Reading</th>
-                                        <th class="px-3 py-2">Set Point</th>
+                                        <th id="hdr-case-name" onclick="sortCases('name')" class="px-3 py-2 cursor-pointer hover:bg-[#21262d]/50 select-none">Case Name <span class="text-[10px] text-[#8b949e] font-normal ml-1">⇅</span></th>
+                                        <th id="hdr-sensor" onclick="sortCases('sensor')" class="px-3 py-2 cursor-pointer hover:bg-[#21262d]/50 select-none">Sensor Label <span class="text-[10px] text-[#8b949e] font-normal ml-1">⇅</span></th>
+                                        <th id="hdr-mod" onclick="sortCases('mod')" class="px-3 py-2 cursor-pointer hover:bg-[#21262d]/50 select-none">Mod Label <span class="text-[10px] text-[#8b949e] font-normal ml-1">⇅</span></th>
+                                        <th id="hdr-alarms" onclick="sortCases('alarms')" class="px-3 py-2 text-center cursor-pointer hover:bg-[#21262d]/50 select-none">Alarms <span class="text-[10px] text-[#8b949e] font-normal ml-1">⇅</span></th>
+                                        <th id="hdr-wos" onclick="sortCases('wos')" class="px-3 py-2 text-center cursor-pointer hover:bg-[#21262d]/50 select-none">Work Orders <span class="text-[10px] text-[#8b949e] font-normal ml-1">⇅</span></th>
+                                        <th id="hdr-tnt" onclick="sortCases('tnt')" class="px-3 py-2 cursor-pointer hover:bg-[#21262d]/50 select-none">Time Within Target <span class="text-[10px] text-[#8b949e] font-normal ml-1">⇅</span></th>
+                                        <th id="hdr-temp" onclick="sortCases('temp')" class="px-3 py-2 cursor-pointer hover:bg-[#21262d]/50 select-none">Latest Reading <span class="text-[10px] text-[#8b949e] font-normal ml-1">⇅</span></th>
+                                        <th id="hdr-setpoint" onclick="sortCases('setpoint')" class="px-3 py-2 cursor-pointer hover:bg-[#21262d]/50 select-none">Set Point <span class="text-[10px] text-[#8b949e] font-normal ml-1">⇅</span></th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-[#30363d]" id="cases-table-body">
@@ -553,13 +553,13 @@
         ],
         "alarms_list": [
             {
-                "alarm_type": "UPC High temperature",
+                "alarm_type": "Rack Triage",
                 "severity": "CRITICAL",
                 "priority_label": "High",
                 "date": "2026-06-23"
             },
             {
-                "alarm_type": "Rack Triage",
+                "alarm_type": "UPC High temperature",
                 "severity": "CRITICAL",
                 "priority_label": "High",
                 "date": "2026-06-23"
@@ -27062,14 +27062,14 @@
         ],
         "alarms_list": [
             {
-                "alarm_type": "TCO2RL",
-                "severity": "TERMINAL",
+                "alarm_type": "Rack Triage",
+                "severity": "CRITICAL",
                 "priority_label": "High",
                 "date": "2026-06-23"
             },
             {
-                "alarm_type": "Rack Triage",
-                "severity": "CRITICAL",
+                "alarm_type": "TCO2RL",
+                "severity": "TERMINAL",
                 "priority_label": "High",
                 "date": "2026-06-23"
             }
@@ -51885,6 +51885,90 @@
 };
         let ACTIVE_SUB_MARKET = "367-A";
         
+        // Sorting State for Refrigeration Cases Table
+        let CURRENT_STORE_CASES = [];
+        let CASES_SORT = { col: 'name', asc: true };
+        
+        function sortCases(colKey) {
+            if (CASES_SORT.col === colKey) {
+                CASES_SORT.asc = !CASES_SORT.asc;
+            } else {
+                CASES_SORT.col = colKey;
+                CASES_SORT.asc = true;
+            }
+            updateCasesHeaders();
+            renderCasesTable();
+        }
+        
+        function updateCasesHeaders() {
+            const headers = [
+                { id: 'hdr-case-name', key: 'name', text: 'Case Name' },
+                { id: 'hdr-sensor', key: 'sensor', text: 'Sensor Label' },
+                { id: 'hdr-mod', key: 'mod', text: 'Mod Label' },
+                { id: 'hdr-alarms', key: 'alarms', text: 'Alarms', center: true },
+                { id: 'hdr-wos', key: 'wos', text: 'Work Orders', center: true },
+                { id: 'hdr-tnt', key: 'tnt', text: 'Time Within Target' },
+                { id: 'hdr-temp', key: 'temp', text: 'Latest Reading' },
+                { id: 'hdr-setpoint', key: 'setpoint', text: 'Set Point' }
+            ];
+            
+            headers.forEach(h => {
+                const el = document.getElementById(h.id);
+                if (!el) return;
+                
+                const arrow = CASES_SORT.col === h.key ? (CASES_SORT.asc ? ' ▲' : ' ▼') : ' ⇅';
+                el.innerHTML = h.text + `<span class="text-[10px] text-[#8b949e] font-normal ml-1">${arrow}</span>`;
+                el.className = `px-3 py-2 cursor-pointer hover:bg-[#21262d]/50 select-none ${h.center ? 'text-center' : ''} ${CASES_SORT.col === h.key ? 'text-[#ffc220] font-extrabold bg-[#21262d]/40' : ''}`;
+            });
+        }
+        
+        function renderCasesTable() {
+            const casesContainer = document.getElementById("cases-table-body");
+            casesContainer.innerHTML = "";
+            
+            const sortedCases = [...CURRENT_STORE_CASES].sort((a, b) => {
+                let va = a[CASES_SORT.col], vb = b[CASES_SORT.col];
+                
+                // Numeric or string sorting based on columns
+                if (CASES_SORT.col === 'alarms' || CASES_SORT.col === 'wos') {
+                    va = parseInt(va || 0);
+                    vb = parseInt(vb || 0);
+                } else if (CASES_SORT.col === 'tnt') {
+                    va = va === "--" ? -1 : parseFloat(va.replace("%", ""));
+                    vb = vb === "--" ? -1 : parseFloat(vb.replace("%", ""));
+                } else if (CASES_SORT.col === 'temp' || CASES_SORT.col === 'setpoint') {
+                    va = va === "--" ? -999 : parseFloat(va);
+                    vb = vb === "--" ? -999 : parseFloat(vb);
+                    if (isNaN(va)) va = String(a[CASES_SORT.col]);
+                    if (isNaN(vb)) vb = String(b[CASES_SORT.col]);
+                } else {
+                    va = String(va).toLowerCase();
+                    vb = String(vb).toLowerCase();
+                }
+                
+                if (va < vb) return CASES_SORT.asc ? -1 : 1;
+                if (va > vb) return CASES_SORT.asc ? 1 : -1;
+                return 0;
+            });
+            
+            sortedCases.forEach(c => {
+                const alarmClass = parseInt(c.alarms) > 0 ? "text-[#ea1100] font-bold" : "text-[#8b949e]";
+                const row = document.createElement("tr");
+                row.className = "hover:bg-[#21262d]/20 transition";
+                row.innerHTML = `
+                    <td class="px-3 py-2.5 font-bold text-white">${c.name}</td>
+                    <td class="px-3 py-2.5 text-[#8b949e]">${c.sensor}</td>
+                    <td class="px-3 py-2.5 text-[#8b949e]">${c.mod}</td>
+                    <td class="px-3 py-2.5 text-center ${alarmClass}">${c.alarms}</td>
+                    <td class="px-3 py-2.5 text-center text-[#e6edf3]">${c.wos}</td>
+                    <td class="px-3 py-2.5"><span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold ${getScoreColorsClass(c.tnt)}">${c.tnt}</span></td>
+                    <td class="px-3 py-2.5 text-[#e6edf3] font-mono">${c.temp}</td>
+                    <td class="px-3 py-2.5 text-[#8b949e] font-mono">${c.setpoint}</td>
+                `;
+                casesContainer.appendChild(row);
+            });
+        }
+        
         function switchSubMarket(subMarket) {
             ACTIVE_SUB_MARKET = subMarket;
             ["367-A", "366-A"].forEach(sm => {
@@ -52153,26 +52237,13 @@
             });
 
             // Populate Cases
-            const casesContainer = document.getElementById("cases-table-body");
-            casesContainer.innerHTML = "";
-            document.getElementById("det-cases-count").innerText = `${s.cases.length} cases`;
+            CURRENT_STORE_CASES = s.cases || [];
+            document.getElementById("det-cases-count").innerText = `${CURRENT_STORE_CASES.length} cases`;
             
-            s.cases.forEach(c => {
-                const alarmClass = parseInt(c.alarms) > 0 ? "text-[#ea1100] font-bold" : "text-[#8b949e]";
-                const row = document.createElement("tr");
-                row.className = "hover:bg-[#21262d]/20 transition";
-                row.innerHTML = `
-                    <td class="px-3 py-2.5 font-bold text-white">${c.name}</td>
-                    <td class="px-3 py-2.5 text-[#8b949e]">${c.sensor}</td>
-                    <td class="px-3 py-2.5 text-[#8b949e]">${c.mod}</td>
-                    <td class="px-3 py-2.5 text-center ${alarmClass}">${c.alarms}</td>
-                    <td class="px-3 py-2.5 text-center text-[#e6edf3]">${c.wos}</td>
-                    <td class="px-3 py-2.5"><span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold ${getScoreColorsClass(c.tnt)}">${c.tnt}</span></td>
-                    <td class="px-3 py-2.5 text-[#e6edf3] font-mono">${c.temp}</td>
-                    <td class="px-3 py-2.5 text-[#8b949e] font-mono">${c.setpoint}</td>
-                `;
-                casesContainer.appendChild(row);
-            });
+            // Set default sorting on new store load
+            CASES_SORT = { col: 'name', asc: true };
+            updateCasesHeaders();
+            renderCasesTable();
 
             // Populate Alarms Table dynamically from BigQuery alarms_list!
             const alarmsBody = document.getElementById("alarms-table-body");
