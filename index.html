@@ -27099,14 +27099,14 @@
         ],
         "alarms_list": [
             {
-                "alarm_type": "TCO2RL (LOGIC IN1)",
-                "severity": "TERMINAL",
+                "alarm_type": "Rack Controller Alarm (Case B03a)",
+                "severity": "CRITICAL",
                 "priority_label": "High",
                 "date": "2026-06-23"
             },
             {
-                "alarm_type": "Rack Controller Alarm (Case B03a)",
-                "severity": "CRITICAL",
+                "alarm_type": "TCO2RL (LOGIC IN1)",
+                "severity": "TERMINAL",
                 "priority_label": "High",
                 "date": "2026-06-23"
             }
@@ -52345,14 +52345,16 @@
             const variation = (rackHash % 7) - 3.5; // Ranges from -3.5 to +3.5
 
             // Define suction/discharge targets deterministically based on whether medium or low temp rack
-            const sTarget = isMedium ? 15.0 : 13.5;
-            const dTarget = isMedium ? 180.0 : 185.0;
+            const sTarget = isAlarm ? 25.0 : (isMedium ? 15.0 : 13.5);
+            const dTarget = isAlarm ? 280.0 : (isMedium ? 180.0 : 185.0);
 
-            const suctionPsi = (sTarget + (isAlarm ? 3.8 : (tntVal < 85.0 ? 1.2 : -0.3)) + (variation * 0.25)).toFixed(1);
-            const dischargePsi = (dTarget + (isAlarm ? 22.0 : (tntVal < 85.0 ? 6.5 : 1.5)) + (variation * 1.5)).toFixed(1);
+            // 100% ACCURATE CONTROLLER DATA ALIGNMENT FOR SCREENSHOTS
+            const suctionPsi = isAlarm ? "25.3" : (sTarget + (variation * 0.25)).toFixed(1);
+            const dischargePsi = isAlarm ? "285.75" : (dTarget + (variation * 1.5)).toFixed(1);
+            const receiverVal = isAlarm ? "40.84" : (35.0 + (rackHash % 40)).toFixed(1);
 
-            const suctionTemp = (isMedium ? (18.4 + (variation * 0.3)) : (10.4 + (variation * 0.2))).toFixed(1) + " °F";
-            const dischargeTemp = (isMedium ? (114.5 + (variation * 1.2)) : (124.5 + (variation * 1.8))).toFixed(1) + " °F";
+            const suctionTemp = isAlarm ? "--" : (isMedium ? (18.4 + (variation * 0.3)).toFixed(1) + " °F" : (10.4 + (variation * 0.2)).toFixed(1) + " °F");
+            const dischargeTemp = isAlarm ? "--" : (isMedium ? (114.5 + (variation * 1.2)).toFixed(1) + " °F" : (124.5 + (variation * 1.8)).toFixed(1) + " °F");
 
             document.getElementById("telemetry-suction-psi").innerText = `${suctionPsi} PSI`;
             document.getElementById("telemetry-suction-target").innerText = `Target: ${sTarget} PSI`;
@@ -52363,9 +52365,11 @@
             document.getElementById("telemetry-discharge-temp").innerText = dischargeTemp;
             
             // Supers & subcooling
-            document.getElementById("telemetry-sat-suction").innerText = isMedium ? (15.2 + (variation * 0.1)).toFixed(1) + " °F" : (-15.2 + (variation * 0.1)).toFixed(1) + " °F";
-            document.getElementById("telemetry-superheat").innerText = isAlarm ? "19.4 °F" : (12.6 + (variation * 0.15)).toFixed(1) + " °F";
-            document.getElementById("telemetry-superheat").className = isAlarm ? "text-[#ea1100] font-bold" : "text-[#2a8703]";
+            document.getElementById("telemetry-sat-suction").innerText = isAlarm ? "--" : (isMedium ? (15.2 + (variation * 0.1)).toFixed(1) + " °F" : (-15.2 + (variation * 0.1)).toFixed(1) + " °F");
+            document.getElementById("telemetry-superheat").innerText = isAlarm ? "--" : (12.6 + (variation * 0.15)).toFixed(1) + " °F";
+            document.getElementById("telemetry-superheat").className = isAlarm ? "text-[#8b949e]" : "text-[#2a8703]";
+            document.getElementById("telemetry-subcooling").innerText = isAlarm ? "--" : (8.4 + (variation * 0.1)).toFixed(1) + " °F";
+            document.getElementById("telemetry-subcooling").className = isAlarm ? "text-[#8b949e]" : "text-[#2a8703]";
             
             // Generate deterministic compressor run times and statuses
             const run1 = 1200 + (rackHash % 400);
@@ -52377,22 +52381,44 @@
             document.getElementById("telemetry-comp2-rt").innerText = `Run Time: ${run2.toLocaleString()}h`;
             document.getElementById("telemetry-comp4-rt").innerText = `Run Time: ${run4.toLocaleString()}h`;
             
-            // Comp 3 state (offline standby or active depending on alarm/hash)
-            const comp3Active = (rackHash % 3 === 0) || isAlarm;
-            if (comp3Active) {
-                document.getElementById("telemetry-comp3-status").innerText = "ACTIVE";
-                document.getElementById("telemetry-comp3-status").className = "text-sm font-extrabold text-[#2a8703] mt-1";
-                document.getElementById("telemetry-comp3-card").className = "bg-[#21262d] border border-[#2a8703]/30 rounded p-3 text-center";
-                document.getElementById("telemetry-comp3-rt").innerText = `Run Time: ${run3.toLocaleString()}h`;
+            // Comp 3 state (ALARM state for alarms to match first screenshot, offline standby or active otherwise)
+            if (isAlarm) {
+                // Compressor A3 is in Alarm / Fault (light pink / red border)
+                document.getElementById("telemetry-comp3-status").innerText = "FAULT / ALARM";
+                document.getElementById("telemetry-comp3-status").className = "text-sm font-extrabold text-[#ea1100] mt-1";
+                document.getElementById("telemetry-comp3-card").className = "bg-[#ffebe6] border border-[#ffbdad] rounded p-3 text-center";
+                document.getElementById("telemetry-comp3-rt").innerText = `Fail Code: High Temp`;
+                
+                // Other compressors are active
+                ["1", "2", "4"].forEach(idx => {
+                    document.getElementById(`telemetry-comp${idx}-status`).innerText = "ACTIVE";
+                    document.getElementById(`telemetry-comp${idx}-status`).className = "text-sm font-extrabold text-[#2a8703] mt-1";
+                    document.getElementById(`telemetry-comp${idx}-card`).className = "bg-[#e3fcef] border border-[#2a8703]/30 rounded p-3 text-center";
+                });
             } else {
-                document.getElementById("telemetry-comp3-status").innerText = "OFFLINE";
-                document.getElementById("telemetry-comp3-status").className = "text-sm font-extrabold text-[#8b949e] mt-1";
-                document.getElementById("telemetry-comp3-card").className = "bg-[#21262d] border border-[#30363d] rounded p-3 text-center";
-                document.getElementById("telemetry-comp3-rt").innerText = "Standby";
+                const comp3Active = (rackHash % 3 === 0);
+                if (comp3Active) {
+                    document.getElementById("telemetry-comp3-status").innerText = "ACTIVE";
+                    document.getElementById("telemetry-comp3-status").className = "text-sm font-extrabold text-[#2a8703] mt-1";
+                    document.getElementById("telemetry-comp3-card").className = "bg-[#21262d] border border-[#2a8703]/30 rounded p-3 text-center";
+                    document.getElementById("telemetry-comp3-rt").innerText = `Run Time: ${run3.toLocaleString()}h`;
+                } else {
+                    document.getElementById("telemetry-comp3-status").innerText = "OFFLINE";
+                    document.getElementById("telemetry-comp3-status").className = "text-sm font-extrabold text-[#8b949e] mt-1";
+                    document.getElementById("telemetry-comp3-card").className = "bg-[#21262d] border border-[#30363d] rounded p-3 text-center";
+                    document.getElementById("telemetry-comp3-rt").innerText = "Standby";
+                }
+                
+                ["1", "2", "4"].forEach(idx => {
+                    document.getElementById(`telemetry-comp${idx}-status`).innerText = "ACTIVE";
+                    document.getElementById(`telemetry-comp${idx}-status`).className = "text-sm font-extrabold text-[#2a8703] mt-1";
+                    document.getElementById(`telemetry-comp${idx}-card`).className = "bg-[#21262d] border border-[#2a8703]/30 rounded p-3 text-center";
+                });
             }
             
-            const runningCount = comp3Active ? 4 : 3;
-            const demandPct = comp3Active ? 100 : 75;
+            const comp3Running = (!isAlarm && (rackHash % 3 === 0));
+            const runningCount = isAlarm ? 3 : (comp3Running ? 4 : 3);
+            const demandPct = isAlarm ? 75 : (comp3Running ? 100 : 75);
             document.getElementById("telemetry-comp-demand").innerText = `${demandPct}% (${runningCount} of 4 Running)`;
             
             // Oil and Temp Control tab
@@ -52412,9 +52438,8 @@
             const oilTemp = (105.0 + (variation * 3.5)).toFixed(1);
             document.getElementById("telemetry-oil-temp").innerText = `${oilTemp} °F`;
             
-            const receiverLvl = (35.0 + (rackHash % 40)).toFixed(1);
-            document.getElementById("telemetry-receiver-level").innerText = `${receiverLvl}%`;
-            document.getElementById("telemetry-receiver-level").className = parseFloat(receiverLvl) < 40 ? "text-[#ea1100] font-bold" : "text-[#ffc220] font-bold";
+            document.getElementById("telemetry-receiver-level").innerText = `${receiverVal}%`;
+            document.getElementById("telemetry-receiver-level").className = parseFloat(receiverVal) < 41.0 ? "text-[#ea1100] font-bold" : "text-[#ffc220] font-bold";
             
             const statusTxt = document.getElementById("modal-status-txt");
             if (isAlarm) {
@@ -52423,6 +52448,7 @@
             } else {
                 statusTxt.innerText = "NORMAL OPERATION";
                 statusTxt.className = "text-[#2a8703] font-bold";
+            }
             }
 
             switchModalTab("suction");
