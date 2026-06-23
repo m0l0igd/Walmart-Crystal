@@ -415,30 +415,30 @@
                 <!-- Panel 2: Compressor Status -->
                 <div id="panel-compressors" class="space-y-4 hidden">
                     <div class="grid grid-cols-4 gap-4">
-                        <div class="bg-[#21262d] border border-[#2a8703]/30 rounded p-3 text-center">
+                        <div id="telemetry-comp1-card" class="bg-[#21262d] border border-[#2a8703]/30 rounded p-3 text-center">
                             <div class="text-[10px] text-[#8b949e] uppercase font-bold">Comp 1 (Lead)</div>
-                            <div class="text-sm font-extrabold text-[#2a8703] mt-1">ACTIVE</div>
-                            <div class="text-[10px] text-[#8b949e] mt-1">Run Time: 1,421h</div>
+                            <div id="telemetry-comp1-status" class="text-sm font-extrabold text-[#2a8703] mt-1">ACTIVE</div>
+                            <div id="telemetry-comp1-rt" class="text-[10px] text-[#8b949e] mt-1">Run Time: 1,421h</div>
                         </div>
-                        <div class="bg-[#21262d] border border-[#2a8703]/30 rounded p-3 text-center">
+                        <div id="telemetry-comp2-card" class="bg-[#21262d] border border-[#2a8703]/30 rounded p-3 text-center">
                             <div class="text-[10px] text-[#8b949e] uppercase font-bold">Comp 2</div>
-                            <div class="text-sm font-extrabold text-[#2a8703] mt-1">ACTIVE</div>
-                            <div class="text-[10px] text-[#8b949e] mt-1">Run Time: 984h</div>
+                            <div id="telemetry-comp2-status" class="text-sm font-extrabold text-[#2a8703] mt-1">ACTIVE</div>
+                            <div id="telemetry-comp2-rt" class="text-[10px] text-[#8b949e] mt-1">Run Time: 984h</div>
                         </div>
-                        <div class="bg-[#21262d] border border-[#30363d] rounded p-3 text-center">
+                        <div id="telemetry-comp3-card" class="bg-[#21262d] border border-[#30363d] rounded p-3 text-center">
                             <div class="text-[10px] text-[#8b949e] uppercase font-bold">Comp 3</div>
-                            <div class="text-sm font-extrabold text-[#8b949e] mt-1">OFFLINE</div>
-                            <div class="text-[10px] text-[#8b949e] mt-1">Standby</div>
+                            <div id="telemetry-comp3-status" class="text-sm font-extrabold text-[#8b949e] mt-1">OFFLINE</div>
+                            <div id="telemetry-comp3-rt" class="text-[10px] text-[#8b949e] mt-1">Standby</div>
                         </div>
-                        <div class="bg-[#21262d] border border-[#2a8703]/30 rounded p-3 text-center">
+                        <div id="telemetry-comp4-card" class="bg-[#21262d] border border-[#2a8703]/30 rounded p-3 text-center">
                             <div class="text-[10px] text-[#8b949e] uppercase font-bold">Comp 4</div>
-                            <div class="text-sm font-extrabold text-[#2a8703] mt-1">ACTIVE</div>
-                            <div class="text-[10px] text-[#8b949e] mt-1">Run Time: 1,120h</div>
+                            <div id="telemetry-comp4-status" class="text-sm font-extrabold text-[#2a8703] mt-1">ACTIVE</div>
+                            <div id="telemetry-comp4-rt" class="text-[10px] text-[#8b949e] mt-1">Run Time: 1,120h</div>
                         </div>
                     </div>
                     <div class="bg-[#21262d] p-3 rounded-lg border border-[#30363d] text-xs text-[#8b949e] flex justify-between">
                         <span>Total Compressors Demand:</span>
-                        <span class="text-white font-bold">75% (3 of 4 Running)</span>
+                        <span id="telemetry-comp-demand" class="text-white font-bold">75% (3 of 4 Running)</span>
                     </div>
                 </div>
 
@@ -447,19 +447,19 @@
                     <div class="grid grid-cols-2 gap-4 text-xs">
                         <div class="bg-[#21262d] p-3 rounded border border-[#30363d] flex justify-between items-center">
                             <span class="text-[#8b949e]">Oil Level Switch:</span>
-                            <span class="bg-[#2a8703]/20 text-[#2a8703] border border-[#2a8703]/30 px-2 py-0.5 rounded font-bold text-[10px]">OK</span>
+                            <span id="telemetry-oil-switch" class="bg-[#2a8703]/20 text-[#2a8703] border border-[#2a8703]/30 px-2 py-0.5 rounded font-bold text-[10px]">OK</span>
                         </div>
                         <div class="bg-[#21262d] p-3 rounded border border-[#30363d] flex justify-between items-center">
                             <span class="text-[#8b949e]">Oil Pressure Differential:</span>
-                            <span class="text-white font-bold">34.2 PSI</span>
+                            <span id="telemetry-oil-press" class="text-white font-bold">34.2 PSI</span>
                         </div>
                         <div class="bg-[#21262d] p-3 rounded border border-[#30363d] flex justify-between items-center">
                             <span class="text-[#8b949e]">Oil Temp:</span>
-                            <span class="text-white font-bold">110.2 °F</span>
+                            <span id="telemetry-oil-temp" class="text-white font-bold">110.2 °F</span>
                         </div>
                         <div class="bg-[#21262d] p-3 rounded border border-[#30363d] flex justify-between items-center">
                             <span class="text-[#8b949e]">Receiver Level:</span>
-                            <span class="text-[#ffc220] font-bold">42.5%</span>
+                            <span id="telemetry-receiver-level" class="text-[#ffc220] font-bold">42.5%</span>
                         </div>
                     </div>
                 </div>
@@ -553,13 +553,13 @@
         ],
         "alarms_list": [
             {
-                "alarm_type": "UPC High temperature",
+                "alarm_type": "Rack Triage",
                 "severity": "CRITICAL",
                 "priority_label": "High",
                 "date": "2026-06-23"
             },
             {
-                "alarm_type": "Rack Triage",
+                "alarm_type": "UPC High temperature",
                 "severity": "CRITICAL",
                 "priority_label": "High",
                 "date": "2026-06-23"
@@ -52251,6 +52251,55 @@
             document.getElementById("telemetry-sat-suction").innerText = isMedium ? (15.2 + (variation * 0.1)).toFixed(1) + " °F" : (-15.2 + (variation * 0.1)).toFixed(1) + " °F";
             document.getElementById("telemetry-superheat").innerText = isAlarm ? "19.4 °F" : (12.6 + (variation * 0.15)).toFixed(1) + " °F";
             document.getElementById("telemetry-superheat").className = isAlarm ? "text-[#ea1100] font-bold" : "text-[#2a8703]";
+            
+            // Generate deterministic compressor run times and statuses
+            const run1 = 1200 + (rackHash % 400);
+            const run2 = 800 + (rackHash % 300);
+            const run4 = 1000 + (rackHash % 250);
+            const run3 = 1100 + (rackHash % 200);
+            
+            document.getElementById("telemetry-comp1-rt").innerText = `Run Time: ${run1.toLocaleString()}h`;
+            document.getElementById("telemetry-comp2-rt").innerText = `Run Time: ${run2.toLocaleString()}h`;
+            document.getElementById("telemetry-comp4-rt").innerText = `Run Time: ${run4.toLocaleString()}h`;
+            
+            // Comp 3 state (offline standby or active depending on alarm/hash)
+            const comp3Active = (rackHash % 3 === 0) || isAlarm;
+            if (comp3Active) {
+                document.getElementById("telemetry-comp3-status").innerText = "ACTIVE";
+                document.getElementById("telemetry-comp3-status").className = "text-sm font-extrabold text-[#2a8703] mt-1";
+                document.getElementById("telemetry-comp3-card").className = "bg-[#21262d] border border-[#2a8703]/30 rounded p-3 text-center";
+                document.getElementById("telemetry-comp3-rt").innerText = `Run Time: ${run3.toLocaleString()}h`;
+            } else {
+                document.getElementById("telemetry-comp3-status").innerText = "OFFLINE";
+                document.getElementById("telemetry-comp3-status").className = "text-sm font-extrabold text-[#8b949e] mt-1";
+                document.getElementById("telemetry-comp3-card").className = "bg-[#21262d] border border-[#30363d] rounded p-3 text-center";
+                document.getElementById("telemetry-comp3-rt").innerText = "Standby";
+            }
+            
+            const runningCount = comp3Active ? 4 : 3;
+            const demandPct = comp3Active ? 100 : 75;
+            document.getElementById("telemetry-comp-demand").innerText = `${demandPct}% (${runningCount} of 4 Running)`;
+            
+            // Oil and Temp Control tab
+            const oilOk = !isAlarm || (rackHash % 2 !== 0);
+            const oilSwitch = document.getElementById("telemetry-oil-switch");
+            if (oilOk) {
+                oilSwitch.innerText = "OK";
+                oilSwitch.className = "bg-[#2a8703]/20 text-[#2a8703] border border-[#2a8703]/30 px-2 py-0.5 rounded font-bold text-[10px]";
+            } else {
+                oilSwitch.innerText = "LOW";
+                oilSwitch.className = "bg-[#ea1100]/20 text-[#ea1100] border border-[#ea1100]/30 px-2 py-0.5 rounded font-bold text-[10px]";
+            }
+            
+            const oilPress = (30.0 + (variation * 1.5)).toFixed(1);
+            document.getElementById("telemetry-oil-press").innerText = `${oilPress} PSI`;
+            
+            const oilTemp = (105.0 + (variation * 3.5)).toFixed(1);
+            document.getElementById("telemetry-oil-temp").innerText = `${oilTemp} °F`;
+            
+            const receiverLvl = (35.0 + (rackHash % 40)).toFixed(1);
+            document.getElementById("telemetry-receiver-level").innerText = `${receiverLvl}%`;
+            document.getElementById("telemetry-receiver-level").className = parseFloat(receiverLvl) < 40 ? "text-[#ea1100] font-bold" : "text-[#ffc220] font-bold";
             
             const statusTxt = document.getElementById("modal-status-txt");
             if (isAlarm) {
