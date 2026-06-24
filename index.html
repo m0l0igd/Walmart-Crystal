@@ -593,13 +593,13 @@
                 "alarm_type": "Rack Controller Alarm (Case B01a)",
                 "severity": "CRITICAL",
                 "priority_label": "High",
-                "date": "2026-06-23"
+                "date": "2026-06-24"
             },
             {
                 "alarm_type": "UPC High temperature (RTU-5)",
                 "severity": "CRITICAL",
                 "priority_label": "High",
-                "date": "2026-06-23"
+                "date": "2026-06-24"
             }
         ],
         "cases": [
@@ -2364,7 +2364,7 @@
                 "alarm_type": "HVAC_HZAT (AHM3 ITS)",
                 "severity": "TERMINAL",
                 "priority_label": "High",
-                "date": "2026-06-23"
+                "date": "2026-06-24"
             }
         ],
         "cases": [
@@ -23512,7 +23512,7 @@
                 "alarm_type": "HVAC_HZAT (Zone Temp)",
                 "severity": "TERMINAL",
                 "priority_label": "High",
-                "date": "2026-06-23"
+                "date": "2026-06-24"
             }
         ],
         "cases": [
@@ -25327,7 +25327,7 @@
                 "alarm_type": "UPC High temperature (RTU-5)",
                 "severity": "CRITICAL",
                 "priority_label": "High",
-                "date": "2026-06-23"
+                "date": "2026-06-24"
             }
         ],
         "cases": [
@@ -27102,7 +27102,7 @@
                 "alarm_type": "Rack Controller Alarm (Case B03a)",
                 "severity": "CRITICAL",
                 "priority_label": "High",
-                "date": "2026-06-23"
+                "date": "2026-06-24"
             },
             {
                 "alarm_type": "TCO2RL (LOGIC IN1)",
@@ -36062,7 +36062,7 @@
                 "alarm_type": "VFD (VFD FAULT)",
                 "severity": "WARNING",
                 "priority_label": "Medium",
-                "date": "2026-06-23"
+                "date": "2026-06-24"
             }
         ],
         "cases": [
@@ -44929,7 +44929,7 @@
                 "alarm_type": "UPC High temperature (RTU-1)",
                 "severity": "CRITICAL",
                 "priority_label": "High",
-                "date": "2026-06-23"
+                "date": "2026-06-24"
             }
         ],
         "cases": [
@@ -52183,10 +52183,18 @@
         function getScoreColorsClass(percentage_str) {
             if (!percentage_str || percentage_str === "--") return "bg-transparent text-[#8b949e]";
             const val = parseFloat(percentage_str.replace("%", ""));
-            if (val >= 85.0) return "bg-[#2a8703]/20 text-[#2a8703] border border-[#2a8703]/30";
-            if (val >= 72.0) return "bg-[#21262d] text-[#e6edf3] border border-[#30363d]";
-            if (val >= 60.0) return "bg-[#ffc220]/20 text-[#ffc220] border border-[#ffc220]/30";
-            return "bg-[#ea1100]/20 text-[#ea1100] border border-[#ea1100]/30";
+            // 87.0% and above -> Green (Success)
+            if (val >= 87.0) {
+                return "bg-[#2a8703]/20 text-[#2a8703] border border-[#2a8703]/30";
+            }
+            // 80.0% to 86.9% -> Orange (Warning / Caution)
+            else if (val >= 80.0) {
+                return "bg-[#f16a02]/15 text-[#f16a02] border border-[#f16a02]/30";
+            }
+            // Below 80.0% -> Red (Critical)
+            else {
+                return "bg-[#ea1100]/20 text-[#ea1100] border border-[#ea1100]/30";
+            }
         }
 
         // Navigation Show/Hide
@@ -52316,10 +52324,9 @@
             circle.setAttribute("stroke-dashoffset", offset);
             
             // stroke color matching
-            if (val >= 85.0) circle.setAttribute("stroke", "#2a8703");
-            else if (val >= 72.0) circle.setAttribute("stroke", "#e6edf3");
-            else if (val >= 60.0) circle.setAttribute("stroke", "#ffc220");
-            else circle.setAttribute("stroke", "#ea1100");
+            if (val >= 87.0) circle.setAttribute("stroke", "#2a8703"); // Green
+            else if (val >= 80.0) circle.setAttribute("stroke", "#f16a02"); // Orange
+            else circle.setAttribute("stroke", "#ea1100"); // Red
         }
 
         // Real-Time Telemetry Modal Functions
