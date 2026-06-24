@@ -55,7 +55,7 @@
             <select id="theme-select" onchange="setTheme(this.value)" class="bg-[#161b22] text-[#e6edf3] border-none outline-none font-bold cursor-pointer py-0.5 px-1 pr-1 text-xs transition hover:text-[#ffc220]">
                 <option value="default">Default Dark</option>
                 <option value="ocean">Ocean Breeze</option>
-                <option value="forest">Forest Canopy</option>
+                <option value="light">Default Light</option>
                 <option value="charcoal">Charcoal Minimal</option>
                 <option value="pride">Walmart Pride</option>
             </select>
@@ -553,13 +553,13 @@
                 textPrimary: "#f1faee",
                 accent: "#457b9d"
             },
-            forest: {
-                bgMain: "#06100a",
-                bgCard: "#0c1b11",
-                bgHeader: "#0c1b11",
-                border: "#1a3520",
-                textPrimary: "#e8f5e9",
-                accent: "#2e7d32"
+            light: {
+                bgMain: "#ffffff",
+                bgCard: "#f6f8fa",
+                bgHeader: "#f6f8fa",
+                border: "#d0d7de",
+                textPrimary: "#1f2328",
+                accent: "#0053e2"
             },
             charcoal: {
                 bgMain: "#121212",
@@ -590,14 +590,33 @@
                 document.head.appendChild(styleEl);
             }
             
-            styleEl.innerHTML = `
-                body, html { background-color: ${t.bgMain} !important; color: ${t.textPrimary} !important; }
-                header, footer { background-color: ${t.bgHeader} !important; border-color: ${t.border} !important; }
-                .bg-\\[\\#0d1117\\], .bg-\\[\\#161b22\\], .bg-\\[\\#1e222b\\], .bg-\\[\\#1e222b\\] { background-color: ${t.bgCard} !important; border-color: ${t.border} !important; }
-                .border-\\[\\#30363d\\], .border-\\[\\#30363d\\/50\\] { border-color: ${t.border} !important; }
-                .bg-\\[\\#21262d\\], .bg-\\[\\#21262d\\]\\/50, .bg-\\[\\#21262d\\]\\/40 { background-color: ${t.bgHeader} !important; border-color: ${t.border} !important; }
-                .bg-\\[\\#30363d\\], .bg-\\[\\#30363d\\]\\/20 { background-color: ${t.border} !important; }
-            `;
+            if (themeKey === 'light') {
+                styleEl.innerHTML = `
+                    body, html { background-color: #ffffff !important; color: #1f2328 !important; }
+                    header, footer { background-color: #f6f8fa !important; border-color: #d0d7de !important; }
+                    main { background-color: #ffffff !important; }
+                    h1, h2, h3, h4, th, td, span, p, div, b, code { color: #1f2328 !important; }
+                    .bg-\\[\\#0d1117\\], .bg-\\[\\#161b22\\], .bg-\\[\\#1e222b\\], .bg-\\[\\#1e222b\\] { background-color: #f6f8fa !important; border-color: #d0d7de !important; }
+                    .border-\\[\\#30363d\\], .border-\\[\\#30363d\\/50\\] { border-color: #d0d7de !important; }
+                    .bg-\\[\\#21262d\\], .bg-\\[\\#21262d\\]\\/50, .bg-\\[\\#21262d\\]\\/40 { background-color: #eaeef2 !important; border-color: #d0d7de !important; }
+                    .bg-\\[\\#30363d\\], .bg-\\[\\#30363d\\]\\/20 { background-color: #eaeef2 !important; }
+                    
+                    /* Text color overrides for Light Mode */
+                    .text-white, .text-\\[\\#e6edf3\\], .text-\\[\\#8b949e\\] { color: #1f2328 !important; }
+                    .text-\\[\\#ffc220\\] { color: #0053e2 !important; }
+                    button { color: #1f2328 !important; border-color: #d0d7de !important; }
+                    select, select option { background-color: #ffffff !important; color: #1f2328 !important; border-color: #d0d7de !important; }
+                `;
+            } else {
+                styleEl.innerHTML = `
+                    body, html { background-color: ${t.bgMain} !important; color: ${t.textPrimary} !important; }
+                    header, footer { background-color: ${t.bgHeader} !important; border-color: ${t.border} !important; }
+                    .bg-\\[\\#0d1117\\], .bg-\\[\\#161b22\\], .bg-\\[\\#1e222b\\], .bg-\\[\\#1e222b\\] { background-color: ${t.bgCard} !important; border-color: ${t.border} !important; }
+                    .border-\\[\\#30363d\\], .border-\\[\\#30363d\\/50\\] { border-color: ${t.border} !important; }
+                    .bg-\\[\\#21262d\\], .bg-\\[\\#21262d\\]\\/50, .bg-\\[\\#21262d\\]\\/40 { background-color: ${t.bgHeader} !important; border-color: ${t.border} !important; }
+                    .bg-\\[\\#30363d\\], .bg-\\[\\#30363d\\]\\/20 { background-color: ${t.border} !important; }
+                `;
+            }
             
             // Sync selected values
             const select = document.getElementById("theme-select");
@@ -675,13 +694,13 @@
         ],
         "alarms_list": [
             {
-                "alarm_type": "UPC High temperature (RTU-5)",
+                "alarm_type": "Rack Controller Alarm (Case B01a)",
                 "severity": "CRITICAL",
                 "priority_label": "High",
                 "date": "2026-06-24"
             },
             {
-                "alarm_type": "Rack Controller Alarm (Case B01a)",
+                "alarm_type": "UPC High temperature (RTU-5)",
                 "severity": "CRITICAL",
                 "priority_label": "High",
                 "date": "2026-06-24"
