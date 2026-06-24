@@ -49,6 +49,18 @@
             </nav>
         </div>
 
+        <!-- Subtle Top-Center Theme Selector Dropdown Menu -->
+        <div class="hidden md:flex items-center space-x-1.5 bg-[#0d1117] border border-[#30363d] px-2.5 py-1 rounded-md text-xs">
+            <span class="text-[#8b949e] font-bold uppercase tracking-wider text-[9px]">Palette:</span>
+            <select id="theme-select" onchange="setTheme(this.value)" class="bg-[#161b22] text-[#e6edf3] border-none outline-none font-bold cursor-pointer py-0.5 px-1 pr-1 text-xs transition hover:text-[#ffc220]">
+                <option value="default">Default Dark</option>
+                <option value="ocean">Ocean Breeze</option>
+                <option value="forest">Forest Canopy</option>
+                <option value="charcoal">Charcoal Minimal</option>
+                <option value="pride">Walmart Pride</option>
+            </select>
+        </div>
+
         <div class="flex items-center space-x-4 text-sm">
             <div class="text-right">
                 <div class="text-xs text-[#8b949e]">Logged in as</div>
@@ -523,6 +535,79 @@
 
     <!-- Inject Store Data variables as a clean global JSON payload -->
     <script>
+        // Color Palette Schemes config and loader
+        const THEMES = {
+            default: {
+                bgMain: "#0d1117",
+                bgCard: "#161b22",
+                bgHeader: "#161b22",
+                border: "#30363d",
+                textPrimary: "#e6edf3",
+                accent: "#0053e2"
+            },
+            ocean: {
+                bgMain: "#040d1a",
+                bgCard: "#0b1a29",
+                bgHeader: "#0b1a29",
+                border: "#1d3557",
+                textPrimary: "#f1faee",
+                accent: "#457b9d"
+            },
+            forest: {
+                bgMain: "#06100a",
+                bgCard: "#0c1b11",
+                bgHeader: "#0c1b11",
+                border: "#1a3520",
+                textPrimary: "#e8f5e9",
+                accent: "#2e7d32"
+            },
+            charcoal: {
+                bgMain: "#121212",
+                bgCard: "#1c1c1c",
+                bgHeader: "#1c1c1c",
+                border: "#333333",
+                textPrimary: "#f5f5f5",
+                accent: "#555555"
+            },
+            pride: {
+                bgMain: "#0a1c2a",
+                bgCard: "#112c3f",
+                bgHeader: "#112c3f",
+                border: "#20465a",
+                textPrimary: "#e6edf3",
+                accent: "#ffc220"
+            }
+        };
+
+        function setTheme(themeKey) {
+            const t = THEMES[themeKey] || THEMES.default;
+            localStorage.setItem("crystal-portal-theme", themeKey);
+            
+            let styleEl = document.getElementById("custom-theme-styles");
+            if (!styleEl) {
+                styleEl = document.createElement("style");
+                styleEl.id = "custom-theme-styles";
+                document.head.appendChild(styleEl);
+            }
+            
+            styleEl.innerHTML = `
+                body, html { background-color: ${t.bgMain} !important; color: ${t.textPrimary} !important; }
+                header, footer { background-color: ${t.bgHeader} !important; border-color: ${t.border} !important; }
+                .bg-\\[\\#0d1117\\], .bg-\\[\\#161b22\\], .bg-\\[\\#1e222b\\], .bg-\\[\\#1e222b\\] { background-color: ${t.bgCard} !important; border-color: ${t.border} !important; }
+                .border-\\[\\#30363d\\], .border-\\[\\#30363d\\/50\\] { border-color: ${t.border} !important; }
+                .bg-\\[\\#21262d\\], .bg-\\[\\#21262d\\]\\/50, .bg-\\[\\#21262d\\]\\/40 { background-color: ${t.bgHeader} !important; border-color: ${t.border} !important; }
+                .bg-\\[\\#30363d\\], .bg-\\[\\#30363d\\]\\/20 { background-color: ${t.border} !important; }
+            `;
+            
+            // Sync selected values
+            const select = document.getElementById("theme-select");
+            if (select) select.value = themeKey;
+        }
+
+        // Run theme loader immediately
+        const savedTheme = localStorage.getItem("crystal-portal-theme") || "default";
+        setTheme(savedTheme);
+
         const STORES_DATA = {
     "1149": {
         "store_number": "1149",
@@ -590,13 +675,13 @@
         ],
         "alarms_list": [
             {
-                "alarm_type": "Rack Controller Alarm (Case B01a)",
+                "alarm_type": "UPC High temperature (RTU-5)",
                 "severity": "CRITICAL",
                 "priority_label": "High",
                 "date": "2026-06-24"
             },
             {
-                "alarm_type": "UPC High temperature (RTU-5)",
+                "alarm_type": "Rack Controller Alarm (Case B01a)",
                 "severity": "CRITICAL",
                 "priority_label": "High",
                 "date": "2026-06-24"
@@ -9413,7 +9498,7 @@
                 "alarm_type": "VFD (VFD FAULT)",
                 "severity": "WARNING",
                 "priority_label": "Medium",
-                "date": "2026-06-23"
+                "date": "2026-06-24"
             }
         ],
         "cases": [
